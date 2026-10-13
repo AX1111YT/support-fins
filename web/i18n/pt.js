@@ -224,6 +224,8 @@ export default {
   "firm grip": "pega firme",
   "medium grip": "pega média",
   "Layer height": "Altura de camada",
+  "Nozzle": "Bico",
+  "Your printer's nozzle diameter. The walls, contact tips and tines are sized in nozzle lines, so they widen for a bigger nozzle and the tines narrow for a smaller one.": "O diâmetro do bico da sua impressora. Paredes, pontas de contato e dentes são dimensionados em linhas do bico: ficam mais largos com um bico maior, e os dentes mais finos com um bico menor.",
   "Support gap": "Folga do suporte",
   "Off": "Desligado",
   "Auto": "Automático",

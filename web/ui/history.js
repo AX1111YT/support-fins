@@ -31,7 +31,7 @@ let redoStack = [];
 // same events a hand edit would. `material` first: choosing one rewrites the gap and
 // pad fields, which the snapshot then sets back on top. Not the build volume: that is
 // the printer, saved across visits, not an edit to this part.
-const FORM_IDS = ['material', 'thr', 'tines', 'tine-density', 'layer-height', 'gap',
+const FORM_IDS = ['material', 'nozzle', 'thr', 'tines', 'tine-density', 'layer-height', 'gap',
   'bed-pad', 'pad-h', 'pad-gap', 'pad-grip', 'pad-margin', 'sway', 'sway-from',
   'sway-spacing', 'sway-depth', 'full-brace-depth', 'cutout', 'iface', 'coverage', 'plate-only', 'highlight-small', 'show-layers',
   'show-rings', 'nav-preset'];

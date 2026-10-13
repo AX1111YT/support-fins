@@ -249,6 +249,8 @@ export default {
   "firm grip": "fester Halt",
   "medium grip": "mittlerer Halt",
   "Layer height": "Schichthöhe",
+  "Nozzle": "Düse",
+  "Your printer's nozzle diameter. The walls, contact tips and tines are sized in nozzle lines, so they widen for a bigger nozzle and the tines narrow for a smaller one.": "Der Düsendurchmesser Ihres Druckers. Wände, Kontaktspitzen und Haltezacken sind in Düsenbahnen bemessen: Bei einer größeren Düse werden sie breiter, bei einer kleineren werden die Zacken schmaler.",
   "Support gap": "Stützenabstand",
   "Bed pad": "Stützfuß (Pad)",
   "Off": "Aus",

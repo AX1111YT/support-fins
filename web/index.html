@@ -233,6 +233,18 @@
         <option value="petg">PETG</option>
       </select>
     </label>
+    <!-- Nozzle: the support widths scale from their 0.4 numbers (web/nozzle.js) so a
+         0.6 or 0.8 nozzle doesn't drop the tines or lay the wall as one line. -->
+<label class="fld row" id="nozzle-fld" data-i18n-title title="Your printer's nozzle diameter. The walls, contact tips and tines are sized in nozzle lines, so they widen for a bigger nozzle and the tines narrow for a smaller one.">
+      <span><span data-i18n="Nozzle">Nozzle</span> <span class="mut">mm</span></span>
+      <select id="nozzle">
+        <option value="0.2">0.2</option>
+        <option value="0.25">0.25</option>
+        <option value="0.4" selected>0.4</option>
+        <option value="0.6">0.6</option>
+        <option value="0.8">0.8</option>
+      </select>
+    </label>
     <label class="fld">
       <span data-i18n="Placement">Placement</span>
       <select id="fin-mode" title="Who places the support." data-i18n-title>

@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { buildFins, FIN, PAD } from '../fins.js';
 import { PROP } from '../prop.js';
 import { CUT } from '../cutout.js';
+import { nozzle } from '../nozzle.js';
 import { el } from './dom.js';
 import { scene, meshFrom, ifaceMaterial } from './scene.js';
 import {
@@ -113,7 +114,8 @@ function finOpts() {
                        padGrab: PAD.grab, padStyle: PAD.style, padCustom: { ...PAD.custom },
                        propGap: PROP.gap,
                        cutout: CUT.pattern,
-                       iface: PROP.iface } };
+                       iface: PROP.iface,
+                       nozzle } };
 }
 
 /** The Sway braces settings. The gap is passed explicitly -- sway.js takes the

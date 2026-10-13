@@ -8,6 +8,7 @@ import { FIN, PAD } from '../fins.js';
 import { PROP } from '../prop.js';
 import { CUT } from '../cutout.js';
 import { MATERIAL } from '../materials.js';
+import { applyNozzle } from '../nozzle.js';
 import { el } from './dom.js';
 import { histPush } from './history.js';
 import { removeMode, syncRemoveUI, cancelRemove } from './remove.js';
@@ -216,6 +217,14 @@ el('material').addEventListener('change', () => {
   debouncedRefresh();
 });
 
+// Nozzle size scales the support widths (../nozzle.js); this page's copy is set
+// here for Draw, and the Worker gets it in the build's tunables.
+el('nozzle').addEventListener('change', () => {
+  applyNozzle(Number(el('nozzle').value));
+  syncSectionSums();
+  debouncedRefresh();
+});
+
 /** The fins-toggle button's appearance for the current finsVisible. Factored out
  *  so undo/redo can re-sync it after restoring the flag. */
 export function syncFinsToggleUI() {
@@ -268,7 +277,7 @@ el('highlight-small').addEventListener('change', (e) => {
 /** Refill each section's collapsed recap from the controls' current values. */
 export function syncSectionSums() {
   const sel = (id) => el(id).selectedOptions[0]?.textContent.split(' —')[0] ?? '';
-  el('sum-setup').textContent = `${sel('material')} · ${sel('fin-mode')}`;
+  el('sum-setup').textContent = `${sel('material')} · ${el('nozzle').value} mm · ${sel('fin-mode')}`;
   const grip = el('tine-density').valueAsNumber;
   el('sum-tines').textContent = el('tines').checked
     ? `${grip <= 20 ? 'light' : grip >= 80 ? 'firm' : 'medium'} grip · ${el('layer-height').value} mm`

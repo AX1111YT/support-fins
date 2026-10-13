@@ -293,3 +293,22 @@ more space and material and have not been physically validated for metre-high
 prints. Undo/redo and saved 3MF sessions retain the setting; plugin dialogs keep
 their established capped defaults. This feature needs neither nozzle profiles
 nor the Draw worker/CPU changes.
+
+## Nozzle size — `web/nozzle.js`
+
+Every width above is for a **0.4 mm nozzle**. The site's Nozzle field (0.2 / 0.25 /
+0.4 / 0.6 / 0.8, default 0.4) scales them by `k = nozzle / 0.4`:
+
+| width | 0.4 | rule | 0.6 | 0.8 | 0.2 |
+|---|---|---|---|---|---|
+| tine (`PROP.tineW`, `SWAY.tineW`) | 0.5 | × k | 0.75 | 1.0 | 0.25 |
+| contact tip (`PROP.tip`) | 0.6 | × k | 0.9 | 1.2 | 0.3 |
+| wall (`PROP.th`) | 1.0 | × max(1, k) | 1.5 | 2.0 | 1.0 |
+| wedge (`PERP.th`) | 1.2 | × max(1, k) | 1.8 | 2.4 | 1.2 |
+| brace rib (`SWAY.thMin`–`thMax`) | 1.2–2.4 | × max(1, k) | 1.8–3.6 | 2.4–4.8 | 1.2–2.4 |
+
+One-line features (tines, tip) follow the nozzle both ways. The structural widths
+only grow: a finer nozzle doesn't make a free-standing wall stiffer. Heights (tine
+height, gaps, pad) follow the layer height, not the nozzle. 0.4 is the tuned
+geometry, unchanged. The other sizes are this scaling rule, not printed coupons.
+The plugins build at 0.4 for now.
