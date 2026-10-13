@@ -175,3 +175,19 @@ Deno.test('unknown material / pad style / cutout is refused, not silently PLA', 
     assert(threw, `accepted ${JSON.stringify(bad)}`);
   }
 });
+
+Deno.test('entry: the nozzle widens the walls, and the next call without one is 0.4 again', () => {
+  const pos = posedLbracket(...PLATE);
+  const base = computeFins(pos, OPTS);
+  const wide = computeFins(pos, { ...OPTS, nozzle: 0.8 });
+  assert(PROP.th === 2.0 && PERP.th === 2.4, `0.8 widths not applied (wall ${PROP.th}, wedge ${PERP.th})`);
+  assert(wide.triangles.length !== base.triangles.length
+         || wide.triangles.some((v, i) => v !== base.triangles[i]), 'nozzle 0.8 built the same fins as 0.4');
+  // A host's engine context outlives one build: leaving the nozzle out must not
+  // keep the last part's widths.
+  const again = computeFins(pos, OPTS);
+  assert(PROP.th === 1.0 && PROP.tineW === 0.5, `widths stuck at the last nozzle (wall ${PROP.th})`);
+  assert(again.triangles.length === base.triangles.length
+         && again.triangles.every((v, i) => v === base.triangles[i]), '0.4 after 0.8 differs from 0.4');
+  assert(ENGINE_DEFAULTS.nozzle === 0.4, 'the entry default is not 0.4');
+});

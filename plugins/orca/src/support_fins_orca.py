@@ -91,10 +91,11 @@ if not ENGINE_JS.startswith("__FINS_ENGINE"):
         pass
 
 
-def compute_fins(soup, layer_height, cfg):
+def compute_fins(soup, layer_height, cfg, nozzle=None):
     """Run the printfins.com engine on a posed part.
 
     soup: (M,3,3) float64 triangles, mm, in whatever frame the caller likes.
+    nozzle: the part's nozzle diameter (mm), which sizes the walls and tines; None = 0.4.
     Returns (fins (K,3,3) float64 in the SAME frame as `soup`, stats dict).
     """
     return host_compute(_engine_ctx(), soup, {
@@ -104,7 +105,36 @@ def compute_fins(soup, layer_height, cfg):
         "tineDensity": float(cfg["tine_density"]),
         "coverage": float(cfg["coverage"]),
         "layerHeight": float(layer_height),
+        **({"nozzle": float(nozzle)} if nozzle else {}),
     })
+
+
+def _nozzle(print_object, ctx=None):
+    """The nozzle (mm) that prints this object's walls, from Orca's printer settings
+    ("0.4,0.6" or a list, one per extruder; wall_filament picks, 1-based). None
+    when Orca doesn't say, which keeps the engine's 0.4."""
+    def val(key):
+        for src in (print_object, ctx):
+            try:
+                v = src.config_value(key) if src is not None else None
+            except Exception:
+                v = None
+            if v not in (None, ""):
+                return v
+        return None
+    raw = val("nozzle_diameter")
+    if raw is None:
+        return None
+    sizes = list(raw) if isinstance(raw, (list, tuple)) else str(raw).split(",")
+    try:
+        sizes = [float(s) for s in sizes]
+        idx = max(0, int(val("wall_filament") or 1) - 1)
+    except (TypeError, ValueError):
+        return None
+    if not sizes:
+        return None
+    size = sizes[min(idx, len(sizes) - 1)]
+    return size if size > 0 else None
 
 
 # ---------------------------------------------------------------------------------
@@ -269,7 +299,7 @@ def add_fins_to_layer(layer, fin_expolys):
     return added
 
 
-def inject_fins(print_object, cfg, layer_height, unit, log=None):
+def inject_fins(print_object, cfg, layer_height, unit, log=None, nozzle=None):
     """Compute fins for one PrintObject and add them to its layers. Returns a
     short human-readable result string. If `log` is a dict it is filled with
     diagnostics (frame calibration, per-layer fin area) for the spike."""
@@ -279,7 +309,7 @@ def inject_fins(print_object, cfg, layer_height, unit, log=None):
         return "no model-part volumes"
     zmin = soup[:, :, 2].min()
     soup = soup - np.array([0.0, 0.0, zmin])       # object bottom at z = 0, like slice_z
-    fins, stats = compute_fins(soup, layer_height, cfg)
+    fins, stats = compute_fins(soup, layer_height, cfg, nozzle)
     if len(fins) == 0:
         # Quality first: no fins can still mean overhangs left bare, so say so.
         bare = stats.get("unserved") or stats.get("floating")
@@ -347,9 +377,10 @@ class SupportFinsSlicing(orca.slicing.SlicingPipelineCapabilityBase):
             lh = float(po.config_value("layer_height") or ctx.config_value("layer_height") or 0.2)
         except (TypeError, ValueError):
             lh = 0.2
-        log = {"object_id": _safe(lambda: po.id()), "layer_height": lh, "started": time.time()}
+        nozzle = _nozzle(po, ctx)
+        log = {"object_id": _safe(lambda: po.id()), "layer_height": lh, "nozzle": nozzle, "started": time.time()}
         try:
-            msg = inject_fins(po, cfg, lh, orca.slicing.unscale(1), log)
+            msg = inject_fins(po, cfg, lh, orca.slicing.unscale(1), log, nozzle=nozzle)
         except Exception as e:  # never break a slice over fins; report and carry on
             log["error"] = f"{type(e).__name__}: {e}"
             _write_log(log)

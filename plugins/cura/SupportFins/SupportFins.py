@@ -158,7 +158,8 @@ class SupportFins(QObject, Extension):
             soups.append(frames.part_soup(md.getVertices(),
                                           md.getIndices() if md.hasIndices() else None))
             poses.append(part.getWorldTransformation().getData().copy())
-            v, note = settings.engine_values(saved, self._material_type(part), layer)
+            v, note = settings.engine_values(saved, self._material_type(part), layer,
+                                             self._nozzle(part))
             values.append(v)
             notes.append(note)
         self._progress = Message("Computing fins…", lifetime=0, dismissable=False,
@@ -248,13 +249,23 @@ class SupportFins(QObject, Extension):
     def _selected_parts(self):
         return scope.selected_parts(Selection.getAllSelectedObjects(), is_fins)
 
-    def _material_type(self, part):
-        """Cura's material type ("PLA", "PETG", ...) loaded for this part's extruder."""
+    def _extruder(self, part):
+        """The extruder stack that prints this part."""
         mgr = CuraApplication.getInstance().getExtruderManager()
         pos = part.callDecoration("getActiveExtruderPosition")
         stack = mgr.getExtruderStack(int(pos)) if pos is not None else None
-        stack = stack or mgr.getActiveExtruderStack()
+        return stack or mgr.getActiveExtruderStack()
+
+    def _material_type(self, part):
+        """Cura's material type ("PLA", "PETG", ...) loaded for this part's extruder."""
+        stack = self._extruder(part)
         return stack.material.getMetaDataEntry("material") if stack else None
+
+    def _nozzle(self, part):
+        """The nozzle size (mm) on this part's extruder, or None to keep the default."""
+        stack = self._extruder(part)
+        size = stack.getProperty("machine_nozzle_size", "value") if stack else None
+        return size if isinstance(size, (int, float)) and size > 0 else None
 
     # -- stale fins ------------------------------------------------------------------
     # State lives ON the part (support_fins_*), not in dicts keyed by id(): ids are

@@ -48,7 +48,6 @@ const SITE_EXCLUDED = {
   'gap': 'hand-typed clearance; the material sets it',
   'pad-h': 'Custom pad', 'pad-gap': 'Custom pad', 'pad-grip': 'Custom pad', 'pad-margin': 'Custom pad',
   'iface': 'a third 3MF object for a second material; the plugins hand the host one body',
-  'nozzle': 'site first; the plugins build at 0.4 until their dialogs take it (web/nozzle.js)',
 };
 
 Deno.test('options.json is well formed', () => {
@@ -80,6 +79,13 @@ Deno.test('every default, range and choice is the website\'s', () => {
     if (o.type === 'bool') {
       assert(site.type === 'checkbox', `${o.key}: #${o.site} is not a checkbox`);
       assert(site.checked === o.default, `${o.key}: default ${o.default}, site ${site.checked}`);
+    } else if (o.type === 'number' && site.tag === 'select') {
+      // A number the site offers as presets (the nozzle): the dialog's range spans them.
+      const vals = site.options.map((c) => fromSite(o, c.value));
+      const dflt = (site.options.find((c) => c.selected) || site.options[0]).value;
+      assert(close(fromSite(o, dflt), o.default), `${o.key}: default ${o.default}, site ${dflt}`);
+      assert(close(Math.min(...vals), o.min) && close(Math.max(...vals), o.max),
+             `${o.key}: range ${o.min}..${o.max}, site presets ${vals.join(', ')}`);
     } else if (o.type === 'number') {
       assert(close(fromSite(o, site.value), o.default), `${o.key}: default ${o.default}, site ${site.value}`);
       for (const k of ['min', 'max', 'step']) {

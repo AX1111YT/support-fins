@@ -32,6 +32,7 @@ export const ENGINE_DEFAULTS = Object.freeze({
   coverage: OPTION.coverage.default,         // 0..1 (the site's slider / 100)
   plateOnly: OPTION.plateOnly.default,       // supports on the plate only, none on the part (#218)
   layerHeight: OPTION.layerHeight.default,   // a slicer host passes its own
+  nozzle: OPTION.nozzle.default,             // mm; scales the widths (web/nozzle.js); a slicer host passes its own
   threshold: DEFAULT_THRESHOLD,              // degrees; options.json's default is pinned to it
   material: OPTION.material.default,   // key of web/materials.js MATERIAL
   padStyle: OPTION.padStyle.default,   // one of PAD_STYLES

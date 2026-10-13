@@ -206,3 +206,32 @@ def test_mirrored_part_gets_the_same_fins_as_its_twin():
     _, s_ref = SF.compute_fins(SF.posed_part_soup(ref), 0.2, dict(SF._DEFAULTS))
     assert s_ref["braces"] >= 1
     assert (s_mir["braces"], s_mir["tines"]) == (s_ref["braces"], s_ref["tines"])
+
+
+class _Cfg:
+    def __init__(self, **kv):
+        self.kv = kv
+
+    def config_value(self, key):
+        return self.kv.get(key)
+
+
+@pytest.mark.parametrize("cfg,want", [
+    ({}, None),                                                   # Orca doesn't say: engine's 0.4
+    ({"nozzle_diameter": "0.6"}, 0.6),
+    ({"nozzle_diameter": "0.4,0.8", "wall_filament": "2"}, 0.8),  # the wall extruder's
+    ({"nozzle_diameter": [0.4, 0.8], "wall_filament": "9"}, 0.8), # past the list: the last
+    ({"nozzle_diameter": "junk"}, None),
+])
+def test_nozzle_comes_from_orcas_printer_settings(cfg, want):
+    assert SF._nozzle(_Cfg(**cfg)) == want
+
+
+def test_the_nozzle_reaches_the_engine():
+    part = trimesh.load(MODELS / "cube.stl")
+    po = fake_orca.FakePrintObject(part, rot_x(45))
+    soup = SF.posed_part_soup(po)
+    soup = soup - np.array([0.0, 0.0, soup[:, :, 2].min()])
+    thin, _ = SF.compute_fins(soup, 0.2, dict(SF._DEFAULTS))
+    wide, _ = SF.compute_fins(soup, 0.2, dict(SF._DEFAULTS), 0.8)
+    assert thin.shape != wide.shape or not np.allclose(thin, wide)

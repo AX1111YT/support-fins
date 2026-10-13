@@ -27,6 +27,9 @@ export function clearances(opts) {
     // Off builds no pad, so which style it carries doesn't matter; Auto keeps it valid.
     padStyle: pick('padStyle', opts.padStyle, PAD_STYLES) === 'off' ? 'auto' : opts.padStyle,
     cutout: pick('cutout', opts.cutout, CUTOUT_PATTERNS),
+    // Every call, like the rest: a host's engine context outlives one build, so a
+    // nozzle left out must put the widths back to 0.4's, not keep the last part's.
+    nozzle: Number.isFinite(Number(opts.nozzle)) ? Number(opts.nozzle) : 0.4,
   };
   return { mat, tunables };
 }

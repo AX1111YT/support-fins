@@ -62,6 +62,7 @@ then **+** next to *My Add-Ins*.
    - Fin style: *Auto* (props for the overhangs, plus bracing fins if the part would topple),
      *Props only*, or *Stabilize*
    - Layer height (**must match your slicer**)
+   - Nozzle (your printer's nozzle size; walls and tines are sized in its lines)
    - Tines on/off, Tine density %
    - Wide-face coverage % (how densely a broad overhang is lined)
    - Bed pad on/off

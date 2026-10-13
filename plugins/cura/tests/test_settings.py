@@ -68,13 +68,15 @@ def test_engine_values_resolve_the_material_and_add_curas_layer_height():
     values = settings.load(SCHEMA, "")
     out, note = settings.engine_values(values, "PETG", 0.12)
     assert out["material"] == "petg" and out["layerHeight"] == 0.12 and "PETG" in note
+    assert "nozzle" not in out                            # no extruder size: the 0.4 default
+    assert settings.engine_values(values, "PLA", 0.3, 0.6)[0]["nozzle"] == 0.6
     pinned, note = settings.engine_values(dict(values, material="pla"), "PETG", 0.2)
     assert pinned["material"] == "pla" and note == "PLA (set in Support Fins settings)"   # the user's pick beats Cura's
 
 
 def test_dialog_rows_show_percents_and_curas_material():
     rows = {r["key"]: r for r in settings.rows(SCHEMA, settings.load(SCHEMA, ""), "PETG")}
-    assert "layerHeight" not in rows
+    assert "layerHeight" not in rows and "nozzle" not in rows   # Cura's own
     assert (rows["coverage"]["value"], rows["coverage"]["max"], rows["coverage"]["step"]) == (50, 100, 5)
     assert rows["sway.reach"]["value"] == 15              # not 15.000000000000002
     mat = rows["material"]

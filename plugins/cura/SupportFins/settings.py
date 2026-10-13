@@ -3,8 +3,9 @@
 No Cura imports, so tests load it on its own. The settings themselves are the shared
 options.json (the site's settings); this file only adds what is Cura's:
 
-  * Layer height is Cura's own (hostSupplied: slicer): read from the profile, never
-    asked, so it can't disagree with what Cura slices.
+  * Layer height and nozzle size are Cura's own (hostSupplied: slicer): read from the
+    profile and the part's extruder, never asked, so they can't disagree with what
+    Cura slices.
   * Material gets a first choice, "Match Cura": PLA or PETG follow the filament loaded
     for the part, anything else falls back to PLA and the readout says so.
   * Stale fins: tilting or scaling a part after its fins were added makes them wrong
@@ -85,8 +86,9 @@ def cura_material(material_type):
     return "pla", f"PLA (Cura has {name or 'no material'}, which fins have no profile for yet)"
 
 
-def engine_values(values, material_type, layer_height):
+def engine_values(values, material_type, layer_height, nozzle=None):
     """Dialog values -> the {key: value} host_options takes, for one part.
+    `nozzle`: the part's extruder's nozzle size (mm); None keeps the 0.4 default.
     Returns (values, material line for the readout)."""
     out = dict(values)
     note = None
@@ -95,6 +97,8 @@ def engine_values(values, material_type, layer_height):
     else:
         note = f"{out['material'].upper()} (set in Support Fins settings)"
     out["layerHeight"] = float(layer_height)
+    if nozzle is not None:
+        out["nozzle"] = float(nozzle)
     return out, note
 
 
