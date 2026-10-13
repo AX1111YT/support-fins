@@ -16,13 +16,13 @@ import { SWAY } from './sway.js';
 import { PERP } from './fins/wedges.js';
 
 export const NOZZLE_REF = 0.4;
-export const NOZZLE_SIZES = Object.freeze([0.2, 0.25, 0.4, 0.6, 0.8]);
 
 // The 0.4 numbers, captured before anything scales them.
 const BASE = Object.freeze({
   th: PROP.th, tip: PROP.tip, tineW: PROP.tineW,
   perpTh: PERP.th,
-  swayTineW: SWAY.tineW, swayThMin: SWAY.thMin, swayThMax: SWAY.thMax, wallHalf: SWAY.wallHalf,
+  swayTineW: SWAY.tineW, swayThMin: SWAY.thMin, swayThMax: SWAY.thMax, swayThPerMm: SWAY.thPerMm,
+  wallHalf: SWAY.wallHalf,
 });
 
 export let nozzle = NOZZLE_REF;
@@ -39,6 +39,7 @@ export function applyNozzle(d) {
   PERP.th = BASE.perpTh * grow;
   SWAY.thMin = BASE.swayThMin * grow;
   SWAY.thMax = BASE.swayThMax * grow;
+  SWAY.thPerMm = BASE.swayThPerMm * grow;   // same height to reach thMax
   // The braces' keep-clear half-width assumes the widest wall's half (PERP's):
   // a wider wedge needs the braces that much further off.
   SWAY.wallHalf = BASE.wallHalf + (PERP.th - BASE.perpTh) / 2;

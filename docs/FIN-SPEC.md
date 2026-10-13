@@ -305,10 +305,14 @@ Every width above is for a **0.4 mm nozzle**. The site's Nozzle field (0.2 / 0.2
 | contact tip (`PROP.tip`) | 0.6 | × k | 0.9 | 1.2 | 0.3 |
 | wall (`PROP.th`) | 1.0 | × max(1, k) | 1.5 | 2.0 | 1.0 |
 | wedge (`PERP.th`) | 1.2 | × max(1, k) | 1.8 | 2.4 | 1.2 |
-| brace rib (`SWAY.thMin`–`thMax`) | 1.2–2.4 | × max(1, k) | 1.8–3.6 | 2.4–4.8 | 1.2–2.4 |
+| brace rib (`SWAY.thMin`–`thMax`, and `thPerMm`) | 1.2–2.4 | × max(1, k) | 1.8–3.6 | 2.4–4.8 | 1.2–2.4 |
 
 One-line features (tines, tip) follow the nozzle both ways. The structural widths
 only grow: a finer nozzle doesn't make a free-standing wall stiffer. Heights (tine
 height, gaps, pad) follow the layer height, not the nozzle. 0.4 is the tuned
 geometry, unchanged. The other sizes are this scaling rule, not printed coupons.
-The plugins build at 0.4 for now.
+The plugins build at 0.4 for now. Tine reach (`PROP.tineReach`
+0.5) is NOT scaled: at 0.8 the contact tip's half-width (0.6) passes it, so how far a
+0.8 tine stands proud of the tip is unprinted. The comb's scan step follows the tine
+width, so a 0.2 comb can land a tine or two fewer. The nozzle is a printer setting:
+remembered across visits, left alone by a loaded session.

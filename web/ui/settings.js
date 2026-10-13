@@ -218,9 +218,17 @@ el('material').addEventListener('change', () => {
 });
 
 // Nozzle size scales the support widths (../nozzle.js); this page's copy is set
-// here for Draw, and the Worker gets it in the build's tunables.
+// here for Draw, and the Worker gets it in the build's tunables. It is the
+// printer's, like the build volume: remembered across visits (storage optional),
+// and a saved session leaves it alone (history.js).
+const NOZZLE_KEY = 'sf.nozzle';
+try {
+  const saved = localStorage.getItem(NOZZLE_KEY);
+  if ([...el('nozzle').options].some((o) => o.value === saved)) el('nozzle').value = saved;
+} catch { /* storage off */ }
 el('nozzle').addEventListener('change', () => {
   applyNozzle(Number(el('nozzle').value));
+  try { localStorage.setItem(NOZZLE_KEY, el('nozzle').value); } catch { /* storage off */ }
   syncSectionSums();
   debouncedRefresh();
 });
@@ -322,7 +330,7 @@ el('augment-toggle').addEventListener('click', () => {
   refreshFins();
 });
 
-/** Bring the pad, tine, sway, cutout and material state in line with the controls
+/** Bring the pad, tine, sway, cutout, material and nozzle state in line with the controls
  *  (a reload can keep the browser's last values). Called once at startup. */
 export function initSettings() {
   syncTineGrip();
@@ -331,6 +339,7 @@ export function initSettings() {
   CUT.pattern = el('cutout').value;   // a reload can keep the browser's last pick
   PROP.iface = ifaceMode();
   applyMaterial(el('material').value);   // sync density + tunables to the initial choice
+  applyNozzle(Number(el('nozzle').value));   // ...and the widths to the remembered nozzle
 }
 
 window.addEventListener('languagechange', () => { if (typeof syncSectionSums === "function") syncSectionSums(); el('fins-toggle').textContent = finsVisible ? t('Fins on') : t('Add fins'); el('augment-toggle').textContent = drawAugment ? t('Done adding walls') : t('+ Add walls by hand'); });

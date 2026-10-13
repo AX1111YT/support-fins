@@ -44,9 +44,9 @@ const readForm = () => Object.fromEntries(FORM_IDS.map((id) => {
 let settled = readForm();
 let restoring = false;
 
-// Not this part's settings but the viewer's own (how it is drawn, the mouse): a
-// session saved in a 3MF (ui/session.js) leaves them as they are.
-const VIEWER_IDS = new Set(['highlight-small', 'show-layers', 'show-rings', 'nav-preset']);
+// Not this part's settings but the viewer's own (how it is drawn, the mouse) or the
+// printer's (the nozzle): a session saved in a 3MF (ui/session.js) leaves them as they are.
+const VIEWER_IDS = new Set(['highlight-small', 'show-layers', 'show-rings', 'nav-preset', 'nozzle']);
 /** The part's settings as they stand, for a saved session. */
 export const sessionForm = () => Object.fromEntries(Object.entries(settled).filter(([id]) => !VIEWER_IDS.has(id)));
 
