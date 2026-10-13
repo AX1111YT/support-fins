@@ -311,7 +311,10 @@ One-line features (tines, tip) follow the nozzle both ways. The structural width
 only grow: a finer nozzle doesn't make a free-standing wall stiffer. Heights (tine
 height, gaps, pad) follow the layer height, not the nozzle. 0.4 is the tuned
 geometry, unchanged. The other sizes are this scaling rule, not printed coupons.
-The plugins build at 0.4 for now. Tine reach (`PROP.tineReach`
+The plugins follow the same rule: Cura and Orca read the nozzle from the slicer, the
+CAD plugins (FreeCAD, Blender, Fusion, SolidWorks, CLI) show a Nozzle field, and the
+Prusa and Onshape plugins, which build their own fins, have one too. The shared
+engine clamps a host's value to 0.1–1.2 and resets to 0.4 when a call leaves it out. Tine reach (`PROP.tineReach`
 0.5) is NOT scaled: at 0.8 the contact tip's half-width (0.6) passes it, so how far a
 0.8 tine stands proud of the tip is unprinted. The comb's scan step follows the tine
 width, so a 0.2 comb can land a tine or two fewer. The nozzle is a printer setting:
