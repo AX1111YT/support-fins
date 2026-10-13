@@ -463,7 +463,7 @@ function resolveConfig(definition is map) returns map
         "finLean"  : definition.finMaxLean is ValueWithUnits ? definition.finMaxLean : 45 * degree
     };
 
-    // Every width is a 0.4 nozzle's (web/nozzle.js, docs/FIN-SPEC.md "Nozzle size"):
+    // Every width is a 0.4 nozzle's (the same rule as the website's Nozzle field):
     // the one-bead tine and the contact tip scale with the nozzle both ways, the
     // walls only grow. A feature saved before the field existed builds at 0.4.
     const k = (definition.nozzle is ValueWithUnits ? definition.nozzle : 0.4 * millimeter) / (0.4 * millimeter);
