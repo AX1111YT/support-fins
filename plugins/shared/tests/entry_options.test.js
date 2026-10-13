@@ -190,4 +190,13 @@ Deno.test('entry: the nozzle widens the walls, and the next call without one is 
   assert(again.triangles.length === base.triangles.length
          && again.triangles.every((v, i) => v === base.triangles[i]), '0.4 after 0.8 differs from 0.4');
   assert(ENGINE_DEFAULTS.nozzle === 0.4, 'the entry default is not 0.4');
+  // null (Python None) is "not set", and a nozzle past the engine's range is clamped
+  // into it -- neither may keep the last call's widths.
+  computeFins(pos, { ...OPTS, nozzle: 0.8 });
+  computeFins(pos, { ...OPTS, nozzle: null });
+  assert(PROP.th === 1.0, `nozzle null kept the last widths (wall ${PROP.th})`);
+  computeFins(pos, { ...OPTS, nozzle: 0.6 });
+  computeFins(pos, { ...OPTS, nozzle: 5 });
+  assert(Math.abs(PROP.th - 3.0) < 1e-9, `nozzle 5 not clamped to 1.2 (wall ${PROP.th})`);
+  computeFins(pos, OPTS);
 });

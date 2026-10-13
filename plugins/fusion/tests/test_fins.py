@@ -325,7 +325,7 @@ class HostPlumbing(unittest.TestCase):
                  fin_coverage=120, fin_bed_pad=False, layer_height=0.28)
         o = fins_command.engine_options(s)
         self.assertEqual(o, {'mode': 'prop', 'bedPad': False, 'tines': True, 'tineDensity': 0.4,
-                             'coverage': 1.0, 'layerHeight': 0.28, 'sway': None})
+                             'coverage': 1.0, 'layerHeight': 0.28, 'nozzle': 0.4, 'sway': None})
         d = fins_command.engine_options(settings_store.DEFAULTS)
         for k, v in engine_host.DEFAULTS.items():        # untouched dialog == the website
             self.assertEqual(d[k], v, k)
@@ -436,6 +436,7 @@ def dialog(bed, body=None, **over):
         body=fake_adsk.SelInput([body] if body else []),
         style=fake_adsk.Drop(label),
         layer=fake_adsk.Val(s['layer_height'] / 10.0),
+        nozzle=fake_adsk.Val(s['nozzle'] / 10.0),
         tines=fake_adsk.Val(s['fin_tines']),
         density=fake_adsk.Slider(s['fin_tine_density']),
         coverage=fake_adsk.Slider(s['fin_coverage']),

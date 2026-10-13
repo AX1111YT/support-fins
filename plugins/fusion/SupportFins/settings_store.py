@@ -10,6 +10,7 @@ PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'settings.json')
 
 DEFAULTS = {
     'layer_height': 0.2,     # mm: has to match the slicer
+    'nozzle': 0.4,           # mm: the printer's nozzle; the widths scale from 0.4's
     # the website's defaults
     'fin_style': 'auto',     # 'auto', 'prop' or 'stabilize'
     'fin_tines': True,

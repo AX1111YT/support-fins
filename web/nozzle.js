@@ -16,6 +16,7 @@ import { SWAY } from './sway.js';
 import { PERP } from './fins/wedges.js';
 
 export const NOZZLE_REF = 0.4;
+export const NOZZLE_MIN = 0.1, NOZZLE_MAX = 1.2;   // what applyNozzle takes
 
 // The 0.4 numbers, captured before anything scales them.
 const BASE = Object.freeze({
@@ -29,7 +30,7 @@ export let nozzle = NOZZLE_REF;
 
 /** Scale the support widths for this nozzle diameter (mm). Junk is ignored. */
 export function applyNozzle(d) {
-  if (!Number.isFinite(d) || d < 0.1 || d > 1.2) return;
+  if (!Number.isFinite(d) || d < NOZZLE_MIN || d > NOZZLE_MAX) return;
   nozzle = d;
   const k = d / NOZZLE_REF, grow = Math.max(1, k);
   PROP.tip = BASE.tip * k;

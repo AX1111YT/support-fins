@@ -3,6 +3,7 @@
 // pick its clearances differently.
 import { MATERIAL } from '../../../web/materials.js';
 import { CUTOUT_PATTERNS } from '../../../web/cutout.js';
+import { NOZZLE_MAX, NOZZLE_MIN, NOZZLE_REF } from '../../../web/nozzle.js';
 
 // The site's Bed pad choices minus Custom (a plugin dialog shows presets, not the
 // four custom numbers). 'off' is the site's Off, the same as bedPad: false.
@@ -20,6 +21,11 @@ export function pick(name, value, allowed) {
  * partial set would let a PETG run's clearances leak into the next PLA run.
  * `opts` is ENGINE_DEFAULTS merged with the host's options.
  */
+function nozzleOf(v) {
+  const n = v === null || v === undefined || v === '' ? NaN : Number(v);
+  return n > 0 ? Math.min(NOZZLE_MAX, Math.max(NOZZLE_MIN, n)) : NOZZLE_REF;
+}
+
 export function clearances(opts) {
   const mat = MATERIAL[pick('material', opts.material, Object.keys(MATERIAL))];
   const tunables = {
@@ -28,8 +34,10 @@ export function clearances(opts) {
     padStyle: pick('padStyle', opts.padStyle, PAD_STYLES) === 'off' ? 'auto' : opts.padStyle,
     cutout: pick('cutout', opts.cutout, CUTOUT_PATTERNS),
     // Every call, like the rest: a host's engine context outlives one build, so a
-    // nozzle left out must put the widths back to 0.4's, not keep the last part's.
-    nozzle: Number.isFinite(Number(opts.nozzle)) ? Number(opts.nozzle) : 0.4,
+    // nozzle left out must put the widths back to 0.4's, not keep the last part's --
+    // and one applyNozzle would refuse (a 1.4 volcano) is clamped into its range,
+    // never passed through to be dropped.
+    nozzle: nozzleOf(opts.nozzle),
   };
   return { mat, tunables };
 }

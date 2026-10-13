@@ -173,6 +173,8 @@ class _CreatedHandler(adsk.core.CommandCreatedEventHandler):
                 style.listItems.add(label, key == known)
             g.addValueInput('layer', 'Layer height', 'mm',
                             adsk.core.ValueInput.createByString('%g mm' % s['layer_height']))
+            g.addValueInput('nozzle', 'Nozzle', 'mm',
+                            adsk.core.ValueInput.createByString('%g mm' % s['nozzle']))
             g.addBoolValueInput('tines', 'Tines', True, '', bool(s['fin_tines']))
             g.addIntegerSliderCommandInput('density', 'Tine density %', 0, 100, False
                                            ).valueOne = int(s['fin_tine_density'])
@@ -231,6 +233,7 @@ def _settings(inputs):
     return {
         'fin_style': _style(inputs),
         'layer_height': round(inputs.itemById('layer').value * fb.MM_PER_CM, 4),
+        'nozzle': round(inputs.itemById('nozzle').value * fb.MM_PER_CM, 4),
         'fin_tines': inputs.itemById('tines').value,
         'fin_tine_density': inputs.itemById('density').valueOne,
         'fin_coverage': inputs.itemById('coverage').valueOne,
@@ -251,6 +254,7 @@ def engine_options(s):
         'tineDensity': max(0, min(100, s['fin_tine_density'])) / 100.0,
         'coverage': max(0, min(100, s['fin_coverage'])) / 100.0,
         'layerHeight': float(s['layer_height']),
+        'nozzle': float(s['nozzle']),
         # Only sent when asked for, so an untouched dialog still matches the
         # website's own defaults exactly (the engine's `sway` default is null).
         'sway': ({'on': True,
