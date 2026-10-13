@@ -18,8 +18,8 @@ flat directory with a single menu entry:
   spacing; at least 1 mm), and **Nozzle** (default 0.4 mm, 0.2–0.8): the tines are one bead,
   so they scale with it both ways (0.75 mm at 0.6), and the 1.2 mm fin only thickens for a
   bigger nozzle (1.8 at 0.6), as on the site. Set it by hand: the plugin reads only the bed's
-  print preset (the layer grid), not the printer's nozzle. Tines spread evenly from just above the foot to just under the
-  top, about Tine Spacing apart along the slope (snapping to the layer grid can stretch a gap
+  print preset (the layer grid), not the printer's nozzle. Tines spread evenly from just above
+  the foot to just under the top, about Tine Spacing apart along the slope (snapping to the layer grid can stretch a gap
   by up to a layer), so both ends always grip. Tines always keep at least one bare layer
   between them, so a tight spacing on a shallow slope never fuses two into a 2-layer band. A
   fin never gets fewer than 3 (the site's grip floor), so a huge spacing still leaves 3. A 25 mm

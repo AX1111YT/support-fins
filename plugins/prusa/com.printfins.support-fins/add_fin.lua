@@ -63,7 +63,7 @@ local TOP_CLEAR    = 0.5    -- bare slope kept at the top (PROP.tineTopClear) [m
 local MIN_ANGLE, MAX_ANGLE = 20, 70
 -- Every width above is a 0.4 nozzle's. The tine is one bead, so it scales with the
 -- nozzle both ways; the fin's thickness only grows (a finer nozzle doesn't stiffen
--- it). As on the site (web/nozzle.js, docs/FIN-SPEC.md "Nozzle size").
+-- it). The same rule as the website's Nozzle field.
 local NOZZLE_REF   = 0.4
 local MIN_NOZZLE, MAX_NOZZLE = 0.2, 0.8
 local MIN_H        = 5.0
