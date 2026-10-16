@@ -274,5 +274,10 @@ if (langBtn && langMenu) {
     langMenu.hidden = true;
     langBtn.setAttribute('aria-expanded', 'false');
   });
+  document.getElementById('lang-opt-nl')?.addEventListener('click', () => {
+    setLanguage('nl');
+    langMenu.hidden = true;
+    langBtn.setAttribute('aria-expanded', 'false');
+  });
 }
 updateDomTranslations();
