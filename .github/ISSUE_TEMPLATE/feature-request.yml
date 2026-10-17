@@ -40,7 +40,7 @@ body:
     id: use_case
     attributes:
       label: Example workflow or use case
-      description: Share an example of when you'd use this, and possibily what a successful result would look like.
+      description: Share an example of when you'd use this, and possibly what a successful result would look like.
     validations:
       required: true
   - type: textarea

@@ -20,7 +20,10 @@ body:
         - Cura
         - FreeCAD
         - Fusion
+        - Onshape
+        - OrcaSlicer
         - PrusaSlicer
+        - SolidWorks
         - Command-line tool
         - Other / not sure
     validations:
