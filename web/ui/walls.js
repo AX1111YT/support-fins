@@ -80,6 +80,11 @@ for (const o of [drawDot, drawCursor, drawBand]) {
 // Pointer is in wall-placement mode (draw mode, or Suggest with the add toggle on).
 // Gates the draw interaction, the gizmo, and face-lay.
 export const drawActive = () => finsVisible && (finMode === 'draw' || drawAugment);
+// Auto / Full with Sway braces on: the pointer stands braces on upright sides
+// (hover previews, a click stands one) without "+ Add walls by hand". Every other
+// click still just orbits -- the ghost shows before the click, and Ctrl-Z takes
+// a brace back, so a stray click is never a silent change.
+export const braceActive = () => finsVisible && autoLike() && !drawAugment && el('sway').checked;
 // Hand-drawn walls contribute to the display and the export. In Draw mode that's
 // always; in Suggest it's whenever the user has drawn any (they persist after the
 // add toggle is switched off, so you can orbit and export without losing them).
@@ -418,7 +423,7 @@ function updateBracePreview(hit, ev) {
   requestAnimationFrame(() => {
     const q = braceQueued;
     braceQueued = null;
-    if (!q || drawStart || !drawActive()) return;
+    if (!q || drawStart || !(drawActive() || braceActive())) return;
     const b = braceAt(q.face, q.p);
     if (b.key === braceShown) return;
     dropGhost();
@@ -506,6 +511,31 @@ export function drawHover(ev) {
     dropGhost();
     renderer.domElement.style.cursor = '';
   }
+}
+
+/** braceActive's pointer move: true when it showed a brace (the cursor is on an
+ *  upright side); otherwise it hides its preview and the caller's hover runs. */
+export function braceHover(ev) {
+  const hit = pickFace(ev);
+  if (hit && swayHit(hit)) {
+    updateBracePreview(hit, ev);
+    renderer.domElement.style.cursor = 'crosshair';
+    return true;
+  }
+  braceQueued = null;
+  if (drawCursor.visible) { drawCursor.visible = false; dropGhost(); renderer.domElement.style.cursor = ''; }
+  return false;
+}
+
+/** braceActive's click: select a support placed by hand, or stand a brace on an
+ *  upright side. Anywhere else does nothing (the click was an orbit). */
+export function braceClick(e) {
+  const sup = pickSupport(e);
+  if (sup) { selectWall(sup); return; }
+  const hit = pickFace(e);
+  if (!hit || !swayHit(hit)) return;
+  if (selectedWall) { selectedWall = null; syncSelection(); }
+  placeSway(hit);
 }
 
 /** With Sway braces on, a click on an UPRIGHT side (no wall half-drawn) stands a brace. */

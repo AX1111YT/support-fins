@@ -523,7 +523,7 @@ export default {
   "Brace walls above": "加固起始高度",
   "Walls taller than this height get face ribs. 5 cm or more; default 10 cm.": "超过此高度的墙会在两面添加加固肋。至少 5 cm，默认 10 cm。",
   "Walls taller than the selected height get triangular ribs at the plate, off both faces, so they don't sway as they print. Untick for plain walls.": "超过所设高度的墙会在热床处沿两面外侧加上三角形肋，减少打印时的晃动。取消勾选即为普通墙。",
-  "Stand tapered buttress ribs against the upright sides of a tall part, tied on with tines all the way up, so it doesn't drift or wobble as it grows. In Draw, hover an upright side to preview one, and click to add it.": "在高瘦零件的直立侧面立起锥形扶壁肋，并沿全高用齿连接，使零件在打印过程中不会漂移或晃动。在绘制模式下，将鼠标悬停在直立侧面上可预览防晃撑，点击即可添加。",
+  "Stand tapered buttress ribs against the upright sides of a tall part, tied on with tines all the way up, so it doesn't drift or wobble as it grows. Hover an upright side to preview one, and click to add it.": "在高瘦零件的直立侧面立起锥形扶壁肋，并沿全高用齿连接，使零件在打印过程中不会漂移或晃动。将鼠标悬停在直立侧面上可预览防晃撑，点击即可添加。",
   "Cross-rib height": "十字肋高度比例",
   "% of height": "% 高度",
   "Cross-rib height as a percentage of sway brace height. 10–90%, default 50%. Requires Brace tall walls and the brace to exceed its start height. Does not change the horizontal reach.": "十字肋高度占防晃撑高度的百分比。可调范围 10%～90%，默认 50%。需勾选「加固高墙」，且防晃撑超过加固起始高度才生效。不改变横向伸出长度。",

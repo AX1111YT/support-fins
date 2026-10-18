@@ -34,7 +34,7 @@ import './ui/scale.js';
 import { updateReadout } from './ui/readout.js';
 import {
   drawnWalls, drawnTris, drawStart, selectedWall, drawActive, sizeMarkers, clearPreview,
-  selectWall, removeSelected, drawHover, drawClick,
+  selectWall, removeSelected, drawHover, drawClick, braceActive, braceHover, braceClick,
 } from './ui/walls.js';
 import { finTris, padTris, lastBuilt } from './ui/finbuild.js';
 import { initSettings } from './ui/settings.js';
@@ -93,6 +93,11 @@ renderer.domElement.addEventListener('pointermove', (ev) => {
   if (drawActive()) {
     hoverFace.visible = false;
     drawHover(ev);
+    return;
+  }
+  // Auto / Full with Sway braces on: an upright side previews the brace a click stands.
+  if (!layActive() && braceActive() && !gizmo.dragging && !gizmo.axis && !pressAt && braceHover(ev)) {
+    hoverFace.visible = false;
     return;
   }
   // Face-lay hover ONLY while armed: otherwise a highlighted, clickable-looking
@@ -154,8 +159,9 @@ renderer.domElement.addEventListener('pointerup', (e) => {
 
   // Lay a face flat -- ONLY when armed via the button. Off by default so a stray
   // viewport click orbits instead of silently discarding a careful rotation.
-  if (!layActive()) return;
-  layClick(e);
+  if (layActive()) { layClick(e); return; }
+  // Auto / Full with Sway braces on: a click on an upright side stands a brace.
+  if (braceActive()) braceClick(e);
 });
 
 // Cancel an armed mode / wall-in-progress: Escape, or a right-click in the viewport.
