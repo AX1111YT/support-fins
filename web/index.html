@@ -718,6 +718,9 @@
 
 <!-- onerror: a module that fails to LOAD (blocked, offline, 404) fires here, not on
      window -- the import graph fails as a whole and says nothing else -->
+<!-- Draw: the sway brace a click on the side under the cursor would stand (ui/walls.js
+     updateBracePreview) -- its height, or why it can't. Follows the pointer, never takes a click. -->
+<div id="brace-tip" role="status"></div>
 <script type="module" src="./app.js" onerror="window.__sfError && __sfError('A script did not load (blocked by the browser or an extension, or offline). Nothing on the page will work.')"></script>
 </body>
 </html>

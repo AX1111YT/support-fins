@@ -247,7 +247,7 @@ export function buildSwayRib(p, uc, partTris, topo, rot, offset, opts = {}) {
   }
   if (Number.isFinite(opts.maxHeight)) {
     H = Math.min(H, opts.maxHeight);
-    if (H < SWAY.minRibH) return { ok: false, reason: 'the clicked height is too low for a brace — click higher on the side' };
+    if (H < SWAY.minRibH) return { ok: false, reason: 'that’s too low for a brace — move up the side' };
   }
   const thFor = (h) => Math.min(SWAY.thMax, SWAY.thMin + SWAY.thPerMm * h);
   let th = thFor(H);
@@ -762,16 +762,17 @@ export function faceIsUpright(topo, rot, faceIndex) {
 
 /**
  * DRAW: a sway brace on the face the user clicked, at the spot they clicked.
- * `point` is in print space; its z caps the brace's height. `avoid` is the braces
- * already standing (each a buildSwayRib result); the new one may shift a few mm to
- * clear them, and is
- * refused -- with that reason -- if it can't. Returns buildSwayRib's result.
+ * `point` is in print space; its z caps the brace's height, unless `opts.full`
+ * (the brace runs up the whole face, as it always did before the cap). `avoid` is
+ * the braces already standing (each a buildSwayRib result); the new one may shift a
+ * few mm to clear them, and is refused -- with the reason at the spot clicked -- if
+ * it can't. Returns buildSwayRib's result.
  */
 export function swayAtFace(topo, result, rot, faceIndex, point, opts = {}, avoid = []) {
   // A brace you clicked is a brace you meant, so the stilt limit Auto obeys is
   // advisory here: it builds and reports `stilt` for the readout to mention.
-  opts = { allowStilt: true, ...opts,
-           maxHeight: Math.min(point[2], Number.isFinite(opts.maxHeight) ? opts.maxHeight : Infinity) };
+  const cap = Number.isFinite(opts.maxHeight) ? opts.maxHeight : Infinity;
+  opts = { allowStilt: true, ...opts, maxHeight: opts.full ? cap : Math.min(point[2], cap) };
   const { byFace, partTris } = patchesFor(topo, rot, result.offset);
   const p = byFace.get(faceIndex);
   if (!p) return { ok: false, reason: 'that face is too small or curved to stand a brace against' };
@@ -785,7 +786,7 @@ export function swayAtFace(topo, result, rot, faceIndex, point, opts = {}, avoid
     if (r.ok && swayClashes(r, braces)) { hitBrace = true; continue; }
     if (r.ok && swayClashesWall(r, walls)) { hitWall = true; continue; }
     if (r.ok) return r;
-    last = r;
+    last ??= r;   // the clicked spot's own reason, not the last nudge's
   }
   if (hitBrace) {
     return { ok: false, reason: 'it would run into another brace (on the facing wall, or right beside it) '

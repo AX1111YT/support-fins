@@ -49,7 +49,8 @@ export function sessionOf(partTris) {
     part: { size: size.map(round) },
     finMode, finsVisible,
     form: sessionForm(),
-    walls: drawnWalls.map((d) => d.kind === 'sway' ? { kind: 'sway', a: at(d.a) } : { a: at(d.a), b: at(d.b) }),
+    walls: drawnWalls.map((d) => d.kind === 'sway' ? { kind: 'sway', a: at(d.a), ...(d.capped ? { capped: true } : {}) }
+                                    : { a: at(d.a), b: at(d.b) }),
     removed: [...removedSigs],
   };
 }
@@ -106,9 +107,9 @@ const formOf = (form) => (form && typeof form === 'object'
   // and before Long walls, tall-wall ribs and Curved walls without them (the nozzle and the viewer's
   // settings stay as this browser has them, even from a file saved before they were left out)
   ? { 'wall-lines': '2', 'long-walls': false, 'tall-ribs': false, 'curved-walls': false,
-      'sway-cross-height': '50', 'tall-ribs-height': '10', 'tine-contact-offset': '-0.01', ...Object.fromEntries(Object.entries(form)
+      'sway-cross-height': '50', 'tall-ribs-height': '10', ...Object.fromEntries(Object.entries(form)
     .filter(([id, v]) => !VIEWER_IDS.has(id) && settable(id, v))) }
-  : { 'sway-cross-height': '50', 'tall-ribs-height': '10', 'tine-contact-offset': '-0.01' });
+  : { 'sway-cross-height': '50', 'tall-ribs-height': '10' });
 
 /**
  * Restore `s` onto the part setPart just loaded: { n } supports restored, or
@@ -127,7 +128,8 @@ export function restoreSession(s) {
   for (const w of s.walls ?? []) {
     if (w.kind === 'sway') {
       const a = vec(w.a);
-      walls.push({ kind: 'sway', face: nearestFace(a), a, ok: false, info: null });
+      // a brace saved before the clicked-height cap ran up the whole face: it still does
+      walls.push({ kind: 'sway', face: nearestFace(a), a, capped: w.capped === true, ok: false, info: null });
     } else walls.push({ a: vec(w.a), b: vec(w.b), ok: false, info: null });
   }
   restoreState({

@@ -818,6 +818,25 @@ html, body {
   transition: opacity .4s ease, visibility 0s linear .4s;
 }
 .vb-pop.vb-tip.show { opacity: 1; visibility: visible; transition: none; }
+/* Draw's sway brace preview label (ui/walls.js): beside the cursor, glass like the
+   view bar's popovers, amber when the spot can't take a brace. */
+#brace-tip {
+  position: fixed;
+  z-index: 4;
+  max-width: 18rem;
+  padding: 4px 9px;
+  border: 1px solid color-mix(in srgb, #fff 9%, transparent);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--panel) 72%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  backdrop-filter: blur(14px) saturate(160%);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  visibility: hidden;
+}
+#brace-tip.show { visibility: visible; }
+#brace-tip.bad { color: #ffb454; }
 /* any popover open (Suggest left open during a drag, Rotate opened mid-fade) wins */
 #viewbar:has(.vb-pop:not([hidden]):not(.vb-tip)) #drag-angle { display: none; }
 #drag-delta { color: var(--accent); font-weight: 600; }
