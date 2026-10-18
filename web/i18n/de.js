@@ -111,7 +111,6 @@ export default {
   'How far the brace reaches out at the bed, as a share of its height. Deeper = stiffer, more plastic. Default 15%.': 'Wie weit die Rippe am Druckbett ausgreift, in Prozent der Höhe. Größer = steifer, aber mehr Material. Standard 15 %.',
   'Vertical distance between brace tines. Smaller = held tighter, more marks on the side. Default 6mm.': 'Vertikaler Abstand zwischen den Rippenzacken. Kleiner = festerer Halt, aber mehr Kontaktpunkte. Standard 6 mm.',
   'Height the brace tines start at. 0 = grip the whole height; raise it to tie on only above where the part starts to move.': 'Höhe, ab der die Rippenzacken greifen. 0 = über die gesamte Höhe; erhöhen, um erst ab dem wackeligen Bereich anzusetzen.',
-  "Stand tapered buttress ribs against the upright sides of a tall part, tied on with tines all the way up, so it doesn't drift or wobble as it grows. In Draw, click an upright side to add one.": 'Setzt konische Stützrippen an aufrechte Seiten hoher Bauteile, um Wackeln und Drift beim Drucken zu verhindern. Im Zeichnen-Modus auf eine aufrechte Seite klicken.',
   "Set this to the layer height you slice at. The grip tines are one layer tall so they snap off clean; if this doesn't match your slicer, the tines tear and leave marks. Default 0.2mm.": 'Stellen Sie dies auf die Schichthöhe Ihres Slicers ein. Die Haltezacken sind genau eine Schicht hoch, damit sie sauber abbrechen. Bei falscher Einstellung hinterlassen sie Spuren.',
   'How tightly to space the grip tines. Light = fewest marks (default), a per-wall floor keeps grip; Firm = dense comb / max grip for a tippy or tall part.': 'Abstand der Haltezacken. Leicht = minimale Abdrücke (Standard); Fest = dichte Zacken für maximalen Halt bei kippligen oder hohen Bauteilen.',
   'Tines fuse the support to the part so it grips instead of just propping. Off = plain breakaway wall.': 'Haltezacken verbinden die Stütze mit dem Bauteil, damit sie greift, statt nur zu stützen. Aus = einfache Stützwand.',
@@ -295,7 +294,6 @@ export default {
   "mm up": "mm ab Boden",
   "Brace tine spacing": "Rippen-Zackenabstand",
   "Brace depth": "Rippen-Tiefe",
-  "% of height": "% der Höhe",
   "Wall lines": "Wandbahnen",
   "How many nozzle lines thick the walls, wedges and sway braces are. 2 is the standard wall. More lines make stiffer supports for tall parts. The contact tip and tines stay one line wide, so the supports still break off the same way.": "Wie viele Düsenbahnen dick Wände, Keile und Stützrippen sind. 2 ist die Standardwand. Mehr Bahnen machen die Stützen für hohe Teile steifer. Kontaktspitze und Haltezacken bleiben eine Bahn breit, damit sich die Stützen weiterhin gleich abbrechen lassen.",
   "Cutouts": "Aussparungen",
@@ -309,7 +307,6 @@ export default {
   "Long walls": "Lange Wände",
   "Brace tall walls": "Hohe Wände versteifen",
   "{n} wall ribs": { one: "{n} Wandrippe", other: "{n} Wandrippen" },
-  "Walls taller than 10 cm get triangular ribs at the plate, off both faces, so they don't sway as they print. Untick for plain walls.": "Wände über 10 cm bekommen am Druckbett dreieckige Rippen an beiden Seiten, damit sie beim Drucken nicht schwanken. Deaktivieren für einfache Wände.",
   "along the part": "entlang des Teils",
   "Full coverage lays rows of long walls along the part's length first, the way you'd draw them by hand, then fills what they miss. Holds more of the overhang and uses more plastic. Untick for short walls under each overhang patch.": "Full Coverage legt zuerst Reihen langer Wände entlang des Bauteils, so wie Sie sie von Hand zeichnen würden, und füllt dann, was sie verfehlen. Hält mehr vom Überhang und braucht mehr Kunststoff. Deaktivieren für kurze Wände unter jedem Überhangbereich.",
   "Curved walls": "Gebogene Wände",
@@ -341,8 +338,6 @@ export default {
   "Remove selected": "Ausgewählte entfernen",
 
   // Manual Draw hint
-  "Click two points across an overhang — straight onto the red faces — to lay a breakaway wall along that line. Click an upright side once to stand a sway brace against it. Esc or right-click cancels.":
-    "Klicken Sie zwei Punkte über einen Überhang – direkt auf die roten Flächen –, um eine Stützwand zu ziehen. Klicken Sie auf eine aufrechte Seite, um eine Stützrippe anzusetzen. Esc oder Rechtsklick bricht ab.",
 
   // Summaries & Readout Notes
   "off": "aus",
@@ -430,4 +425,17 @@ export default {
   "{n} pin": { one: "{n} Stift", other: "{n} Stifte" },
   "The pins attach each wall to the part, as a resin print needs.": "Die Stifte verbinden jede Wand mit dem Bauteil, wie es ein Harzdruck braucht.",
   "resin": "Harz",
+  // Sway braces: hover preview, cross ribs, tall-wall rib height (#318)
+  "Brace walls above": "Wände versteifen ab",
+  "Walls taller than this height get face ribs. 5 cm or more; default 10 cm.": "Wände über dieser Höhe bekommen Rippen an beiden Seiten. Mindestens 5 cm, Standard 10 cm.",
+  "Walls taller than the selected height get triangular ribs at the plate, off both faces, so they don't sway as they print. Untick for plain walls.": "Wände über der eingestellten Höhe bekommen am Druckbett dreieckige Rippen an beiden Seiten, damit sie beim Drucken nicht schwanken. Deaktivieren für einfache Wände.",
+  "Stand tapered buttress ribs against the upright sides of a tall part, tied on with tines all the way up, so it doesn't drift or wobble as it grows. In Draw, hover an upright side to preview one, and click to add it.": "Setzt konische Stützrippen an aufrechte Seiten hoher Bauteile, um Wackeln und Drift beim Drucken zu verhindern. Im Zeichnen-Modus mit der Maus über eine aufrechte Seite fahren, um die Rippe vorab zu sehen, und klicken, um sie zu setzen.",
+  "Cross-rib height": "Kreuzrippen-Höhe",
+  "% of height": "% der Höhe",
+  "Cross-rib height as a percentage of sway brace height. 10–90%, default 50%. Requires Brace tall walls and the brace to exceed its start height. Does not change the horizontal reach.": "Höhe der Kreuzrippen in Prozent der Stützrippen-Höhe. 10–90 %, Standard 50 %. Braucht „Hohe Wände versteifen“ und eine Stützrippe über dessen Starthöhe. Ändert die Reichweite auf dem Druckbett nicht.",
+  "{n} brace ribs": { one: "{n} Kreuzrippe", other: "{n} Kreuzrippen" },
+  "that’s too low for a brace — move up the side": "zu niedrig für eine Stützrippe – weiter oben an der Seite",
+  "Sway brace, full height: {mm} mm": "Stützrippe, volle Höhe: {mm} mm",
+  "Sway brace, {mm} mm tall — move up the side for full height": "Stützrippe, {mm} mm hoch – weiter oben an der Seite für volle Höhe",
+  "Click two points across an overhang — straight onto the red faces — to lay a breakaway wall along that line. Hover an upright side to preview a sway brace: its top follows the cursor, and near the top of the side it runs full height. Click to stand it. Esc or right-click cancels.": "Klicken Sie zwei Punkte über einen Überhang – direkt auf die roten Flächen –, um eine Stützwand zu ziehen. Fahren Sie mit der Maus über eine aufrechte Seite, um eine Stützrippe vorab zu sehen: Ihre Oberkante folgt dem Mauszeiger, und nahe dem oberen Ende der Seite reicht sie über die volle Höhe. Klicken setzt sie. Esc oder Rechtsklick bricht ab.",
 };

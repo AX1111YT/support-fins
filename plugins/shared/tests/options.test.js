@@ -39,7 +39,6 @@ const SITE_ONLY_CHOICES = { padStyle: ['custom'] };
 const SITE_EXCLUDED = {
   'full-brace-depth': 'browser opt-in; plugin dialogs retain the established 60 mm Sway depth limit',
   'sway-cross-height': 'browser sway cross-ribs only; plugin dialogs retain the default rib height ratio',
-  'tine-contact-offset': 'browser tine contact calibration; plugin dialogs retain the default contact offset',
   'long-walls': 'Full coverage only; plugins run Auto',
   'tall-ribs': 'the plugins build with the engine default (on, as the site starts); a dialog control can follow',
   'tall-ribs-height': 'browser tall-wall rib threshold; plugin dialogs retain the default 100 mm height',

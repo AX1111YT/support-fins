@@ -30,7 +30,7 @@ let redoStack = [];
 // fields' own handlers apply them, so a restore writes the values back and fires the
 // same events a hand edit would. Not the build volume: that is the printer, saved
 // across visits, not an edit to this part.
-const FORM_IDS = ['nozzle', 'thr', 'tines', 'tine-density', 'tine-dir', 'pin-depth', 'tine-contact-offset', 'layer-height', 'gap',
+const FORM_IDS = ['nozzle', 'thr', 'tines', 'tine-density', 'tine-dir', 'pin-depth', 'layer-height', 'gap',
   'bed-pad', 'pad-h', 'pad-gap', 'pad-grip', 'pad-margin', 'sway', 'sway-from',
   'sway-spacing', 'sway-depth', 'sway-cross-height', 'full-brace-depth', 'wall-lines', 'cutout', 'iface', 'coverage', 'plate-only', 'long-walls', 'tall-ribs', 'tall-ribs-height', 'curved-walls', 'highlight-small', 'show-islands', 'show-layers',
   'show-rings', 'nav-preset'];

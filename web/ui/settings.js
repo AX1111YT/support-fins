@@ -163,7 +163,6 @@ function syncTineGrip() {
   const pins = on && el('tine-dir').value === 'vertical';
   el('pindepth-fld').hidden = !pins;
   el('resin-note').hidden = !pins;
-  el('tine-contact-offset-fld').hidden = !on;
   // The Light pad is one layer tall, and the interface band is one layer of the
   // wall top (prop/crest.js), so both read the layer height too.
   // Resin pins are no layer tall, so vertical tines don't need it either.
@@ -223,13 +222,6 @@ function wireGap(id, obj, key, lo, hi) {
   });
 }
 wireGap('gap', PROP, 'gap', 0.1, 0.4);
-wireGap('tine-contact-offset', PROP, 'tineContactOffset', -0.2, 0.2);
-el('tine-contact-offset').addEventListener('change', () => {
-  const input = el('tine-contact-offset'), v = input.valueAsNumber;
-  PROP.tineContactOffset = Number.isFinite(v) ? Math.max(-0.2, Math.min(0.2, v)) : -0.01;
-  input.value = String(PROP.tineContactOffset);
-  debouncedRefresh();
-});
 
 // Wall cutouts (issue #34). CUT.pattern is read fresh by every wall sweep -- the
 // drawn walls here on the page, the auto walls in the Worker via tunables.
@@ -433,9 +425,6 @@ export function initSettings() {
   applyTunables(tineDirTunables());   // ...and its last tine direction and pin depth (#309)
   const gap = el('gap').valueAsNumber;   // ...and its last Support gap (wireGap's range)
   if (Number.isFinite(gap)) PROP.gap = Math.min(0.4, Math.max(0.1, gap));
-  const contact = el('tine-contact-offset'), v = contact.valueAsNumber;
-  PROP.tineContactOffset = Number.isFinite(v) ? Math.max(-0.2, Math.min(0.2, v)) : -0.01;
-  contact.value = String(PROP.tineContactOffset);
   applyNozzle(Number(el('nozzle').value));   // ...and the widths to the remembered nozzle
   applyWallLines(Number(el('wall-lines').value));
   fitWallLines();

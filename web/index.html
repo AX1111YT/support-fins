@@ -365,10 +365,6 @@
       <input type="number" id="pin-depth" min="0.05" max="1" step="0.05" value="0.3">
     </label>
     <p class="hint" id="resin-note" hidden data-i18n="Not tested on a resin printer yet. Tell us how it prints on GitHub issue #309.">Not tested on a resin printer yet. Tell us how it prints on GitHub issue #309.</p>
-    <label class="fld row" id="tine-contact-offset-fld" data-i18n-title title="Tine tip offset from the detected surface along the bite direction, for wall and sway brace tines. Positive = gap (less grip), zero = flush, negative = bite (more marks). Does not move the support body. Range -0.2 to 0.2 mm; default -0.01 mm.">
-      <span><span data-i18n="Tine contact offset">Tine contact offset</span> <span class="mut">mm</span></span>
-      <input type="number" id="tine-contact-offset" min="-0.2" max="0.2" step="0.01" value="-0.01">
-    </label>
   </details>
 
   <!-- What every part needs, always in view: the wall cutouts (plastic) and the
@@ -472,11 +468,11 @@
       <label data-i18n-title class="check" title="Walls taller than the selected height get triangular ribs at the plate, off both faces, so they don't sway as they print. Untick for plain walls.">
         <input type="checkbox" id="tall-ribs" checked><span data-i18n="Brace tall walls">Brace tall walls</span>
       </label>
-      <label data-i18n-title class="fld row" id="tall-ribs-height-fld" title="Walls taller than this height get face ribs. Default 10 cm.">
+      <label data-i18n-title class="fld row" id="tall-ribs-height-fld" title="Walls taller than this height get face ribs. 5 cm or more; default 10 cm.">
         <span><span data-i18n="Brace walls above">Brace walls above</span> <span class="mut">cm</span></span>
-        <input type="number" id="tall-ribs-height" min="0.1" max="200" step="0.1" value="10">
+        <input type="number" id="tall-ribs-height" min="5" max="200" step="0.1" value="10">
       </label>
-      <label data-i18n-title class="check" title="Stand tapered buttress ribs against the upright sides of a tall part, tied on with tines all the way up, so it doesn't drift or wobble as it grows. In Draw, click an upright side to add one. Its top will not exceed the clicked height.">
+      <label data-i18n-title class="check" title="Stand tapered buttress ribs against the upright sides of a tall part, tied on with tines all the way up, so it doesn't drift or wobble as it grows. In Draw, hover an upright side to preview one, and click to add it.">
         <input type="checkbox" id="sway"><span data-i18n="Sway braces">Sway braces</span>
       </label>
       <label data-i18n-title class="fld row" id="sway-from-fld" title="Height the brace tines start at. 0 = grip the whole height; raise it to tie on only above where the part starts to move.">

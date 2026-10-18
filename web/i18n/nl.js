@@ -111,7 +111,6 @@ export default {
 	'How far the brace reaches out at the bed, as a share of its height. Deeper = stiffer, more plastic. Default 15%.': 'Hoe ver de schoor bij het printbed uitsteekt, als deel van de hoogte. Verder = steviger, maar meer materiaal. Standaard: 15%.',
 	'Vertical distance between brace tines. Smaller = held tighter, more marks on the side. Default 6mm.': 'Verticale afstand tussen de tanden van de schoor. Kleiner = steviger vastgehouden, maar meer afdrukken aan de zijkant. Standaard: 6 mm.',
 	'Height the brace tines start at. 0 = grip the whole height; raise it to tie on only above where the part starts to move.': 'Hoogte waarop de tanden van de schoor beginnen. 0 = over de volledige hoogte vastgrijpen; verhoog dit om alleen vast te grijpen boven het punt waar het onderdeel begint te bewegen.',
-	"Stand tapered buttress ribs against the upright sides of a tall part, tied on with tines all the way up, so it doesn't drift or wobble as it grows. In Draw, click an upright side to add one.": 'Plaats taps toelopende steunribben tegen de verticale zijden van een hoog onderdeel. De tanden grijpen over de hele hoogte aan en voorkomen dat het onderdeel tijdens het printen verschuift of wiebelt. Klik in de tekenmodus op een verticale zijde om er een toe te voegen.',
 	"Set this to the layer height you slice at. The grip tines are one layer tall so they snap off clean; if this doesn't match your slicer, the tines tear and leave marks. Default 0.2mm.": 'Stel dit in op de laaghoogte waarmee je slicet. De grijptanden zijn één laag hoog, zodat ze netjes afbreken. Als dit niet overeenkomt met je slicer, scheuren de tanden en laten ze afdrukken achter. Standaard: 0,2 mm.',
 	'How tightly to space the grip tines. Light = fewest marks (default), a per-wall floor keeps grip; Firm = dense comb / max grip for a tippy or tall part.': 'Hoe dicht de grijptanden op elkaar staan. Licht = zo min mogelijk afdrukken (standaard); een minimum per wand behoudt de grip. Stevig = dicht opeenstaande tanden voor maximale grip bij een instabiel of hoog onderdeel.',
 	'Tines fuse the support to the part so it grips instead of just propping. Off = plain breakaway wall.': 'De tanden verbinden de support met het onderdeel, zodat die grip biedt in plaats van alleen te ondersteunen. Uit = gewone losbreekbare wand.',
@@ -291,7 +290,6 @@ export default {
 	"mm up": "mm vanaf de bodem",
 	"Brace tine spacing": "Afstand tussen ribsteuntanden",
 	"Brace depth": "Ribdiepte",
-	"% of height": "% van de hoogte",
 	"Wall lines": "Wandbanen",
 	"How many nozzle lines thick the walls, wedges and sway braces are. 2 is the standard wall. More lines make stiffer supports for tall parts. The contact tip and tines stay one line wide, so the supports still break off the same way.": "Het aantal nozzlebanen waaruit de wanden, wiggen en verstevigingsribben bestaan. 2 banen is de standaard voor een wand. Meer banen maken de steunen stijver voor hoge onderdelen. De contactpuntjes en steuntanden blijven één baan breed, zodat de steunen op dezelfde manier afbreken.",
 	"Cutouts": "Uitsparingen",
@@ -329,8 +327,6 @@ export default {
 	"Remove selected": "Selectie verwijderen",
 
 	// Manual Draw hint
-	"Click two points across an overhang — straight onto the red faces — to lay a breakaway wall along that line. Click an upright side once to stand a sway brace against it. Esc or right-click cancels.":
-	  "Klik op twee punten aan weerszijden van een overhang — rechtstreeks op de rode vlakken — om langs die lijn een afbreekbare steunwand te plaatsen. Klik eenmaal op een rechtopstaand zijvlak om er een verstevigingsrib tegenaan te zetten. Esc of rechtsklikken annuleert.",
 
 	// Summaries & Readout Notes
 	"off": "uit",
@@ -409,4 +405,17 @@ export default {
 	"{n} pin": { one: "{n} pin", other: "{n} pinnen" },
 	"The pins attach each wall to the part, as a resin print needs.": "De pinnen verbinden elke wand met het onderdeel, zoals een harsprint nodig heeft.",
 	"resin": "hars",
+	// Sway braces: hover preview, cross ribs, tall-wall rib height (#318)
+	"Brace walls above": "Wanden verstevigen vanaf",
+	"Walls taller than this height get face ribs. 5 cm or more; default 10 cm.": "Wanden hoger dan deze hoogte krijgen ribben aan beide zijden. Minimaal 5 cm, standaard 10 cm.",
+	"Walls taller than the selected height get triangular ribs at the plate, off both faces, so they don't sway as they print. Untick for plain walls.": "Wanden hoger dan de ingestelde hoogte krijgen bij het printbed driehoekige ribben aan beide zijden, zodat ze tijdens het printen niet wiebelen. Vink uit voor gewone wanden.",
+	"Stand tapered buttress ribs against the upright sides of a tall part, tied on with tines all the way up, so it doesn't drift or wobble as it grows. In Draw, hover an upright side to preview one, and click to add it.": "Plaats taps toelopende steunribben tegen de verticale zijden van een hoog onderdeel. De tanden grijpen over de hele hoogte aan en voorkomen dat het onderdeel tijdens het printen verschuift of wiebelt. Beweeg in de tekenmodus over een verticale zijde om er een vooraf te zien, en klik om hem te plaatsen.",
+	"Cross-rib height": "Hoogte kruisribben",
+	"% of height": "% van de hoogte",
+	"Cross-rib height as a percentage of sway brace height. 10–90%, default 50%. Requires Brace tall walls and the brace to exceed its start height. Does not change the horizontal reach.": "Hoogte van de kruisribben als percentage van de hoogte van de verstevigingsrib. 10–90%, standaard 50%. Werkt alleen met ribben voor hoge wanden aan en een verstevigingsrib boven de beginhoogte daarvan. Verandert het bereik op het printbed niet.",
+	"{n} brace ribs": { one: "{n} kruisrib", other: "{n} kruisribben" },
+	"that’s too low for a brace — move up the side": "te laag voor een verstevigingsrib — ga hoger op de zijde",
+	"Sway brace, full height: {mm} mm": "Verstevigingsrib, volle hoogte: {mm} mm",
+	"Sway brace, {mm} mm tall — move up the side for full height": "Verstevigingsrib, {mm} mm hoog — ga hoger op de zijde voor volle hoogte",
+	"Click two points across an overhang — straight onto the red faces — to lay a breakaway wall along that line. Hover an upright side to preview a sway brace: its top follows the cursor, and near the top of the side it runs full height. Click to stand it. Esc or right-click cancels.": "Klik op twee punten aan weerszijden van een overhang — rechtstreeks op de rode vlakken — om langs die lijn een afbreekbare steunwand te plaatsen. Beweeg over een rechtopstaand zijvlak om een verstevigingsrib vooraf te zien: de bovenkant volgt de cursor, en vlak bij de bovenkant van de zijde loopt hij over de volle hoogte. Klik om hem te plaatsen. Esc of rechtsklikken annuleert.",
 };

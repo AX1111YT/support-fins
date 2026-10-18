@@ -104,7 +104,6 @@ export default {
   'How far the brace reaches out at the bed, as a share of its height. Deeper = stiffer, more plastic. Default 15%.': 'مقدار امتداد الدعامة عند سطح الطباعة، نسبةً إلى ارتفاعها. كلما زاد العمق زادت الصلابة واستهلاك المادة. القيمة الافتراضية 15%.',
   'Vertical distance between brace tines. Smaller = held tighter, more marks on the side. Default 6mm.': 'المسافة الرأسية بين أسنان التثبيت. كلما صغرت المسافة زادت قوة التثبيت وازدادت العلامات على جانب القطعة. القيمة الافتراضية 6 mm.',
   'Height the brace tines start at. 0 = grip the whole height; raise it to tie on only above where the part starts to move.': 'الارتفاع الذي تبدأ عنده أسنان التثبيت. القيمة 0 تعني تثبيت القطعة على امتداد ارتفاعها كله؛ ارفع القيمة لتبدأ الأسنان فوق النقطة التي تبدأ عندها القطعة بالتمايل.',
-  "Stand tapered buttress ribs against the upright sides of a tall part, tied on with tines all the way up, so it doesn't drift or wobble as it grows. In Draw, click an upright side to add one.": 'أضف دعامات تقوية مخروطية بمحاذاة الجوانب الرأسية للقطعة الطويلة، وثبّتها بأسنان على امتداد الارتفاع كله لمنع انزياح القطعة أو تمايلها كلما ارتفعت أثناء الطباعة. في وضع «الرسم»، انقر على جانب رأسي لإضافة دعامة.',
   "Set this to the layer height you slice at. The grip tines are one layer tall so they snap off clean; if this doesn't match your slicer, the tines tear and leave marks. Default 0.2mm.": 'اضبطه على ارتفاع الطبقة الذي تقطّع به. ارتفاع أسنان التثبيت يساوي ارتفاع طبقة واحدة كي تنفصل بنظافة عند كسرها؛ وإذا لم تطابق هذه القيمة إعدادات برنامج التقطيع، فستتمزق الأسنان وتترك علامات. الافتراضي 0.2mm.',
   'How tightly to space the grip tines. Light = fewest marks (default), a per-wall floor keeps grip; Firm = dense comb / max grip for a tippy or tall part.': 'مدى تقارب أسنان الإمساك. خفيف = أقل العلامات (الافتراضي)، مع حد أدنى لكل جدار يحافظ على الإمساك؛ محكم = ترتيب كثيف للأسنان وقوة تثبيت قصوى للقطعة الطويلة أو غير المستقرة.',
   'Tines fuse the support to the part so it grips instead of just propping. Off = plain breakaway wall.': 'تجعل أسنان التثبيت الدعامة تتشابك مع القطعة كي تثبّتها بدلاً من الاكتفاء بإسنادها. إيقاف = جدار دعم عادي قابل للكسر.',
@@ -285,7 +284,6 @@ export default {
   "mm up": "mm للأعلى",
   "Brace tine spacing": "تباعد أسنان التثبيت",
   "Brace depth": "عمق الدعامة",
-  "% of height": "% من الارتفاع",
   "Wall lines": "عدد خطوط الجدار",
   "How many nozzle lines thick the walls, wedges and sway braces are. 2 is the standard wall. More lines make stiffer supports for tall parts. The contact tip and tines stay one line wide, so the supports still break off the same way.": "عدد خطوط الفوهة المكوِّنة لسماكة الجدران والأوتاد ودعامات منع التمايل. القيمة 2 هي السماكة القياسية. زيادة العدد تجعل الدعامات أكثر صلابة للقطع الطويلة. يظل طرف التلامس وأسنان التثبيت بعرض خط واحد، لذلك تنفصل الدعامات بالطريقة نفسها.",
   "Cutouts": "الفتحات",
@@ -299,7 +297,6 @@ export default {
   "Long walls": "جدران طويلة",
   "Brace tall walls": "تدعيم الجدران العالية",
   "{n} wall ribs": { one: "{n} ضلع جدار", other: "{n} أضلاع جدار" },
-  "Walls taller than 10 cm get triangular ribs at the plate, off both faces, so they don't sway as they print. Untick for plain walls.": "تحصل الجدران الأطول من 10 سم على أضلاع مثلثة عند السرير، على الوجهين، كي لا تتمايل أثناء الطباعة. ألغِ التحديد لجدران عادية.",
   "along the part": "على طول القطعة",
   "Full coverage lays rows of long walls along the part's length first, the way you'd draw them by hand, then fills what they miss. Holds more of the overhang and uses more plastic. Untick for short walls under each overhang patch.": "تضع التغطية الكاملة أولاً صفوفاً من الجدران الطويلة على طول القطعة، كما سترسمها بيدك، ثم تملأ ما فاتها. تثبّت مساحة أكبر من البروز وتستهلك بلاستيكاً أكثر. ألغِ التحديد لجدران قصيرة تحت كل جزء من البروز.",
   "Stand every support on the build plate, never on the part itself. An overhang with part under it is left unsupported, and the readout says how many.": "ضع كل دعامة على سطح الطباعة، ولا تضعها على القطعة نفسها. ستُترك البروزات المعلّقة التي تقع أجزاء من القطعة أسفلها بلا دعم، ويعرض قسم القراءات عددها.",
@@ -328,8 +325,6 @@ export default {
   "Remove selected": "إزالة المحدد",
 
   // Manual Draw hint
-  "Click two points across an overhang — straight onto the red faces — to lay a breakaway wall along that line. Click an upright side once to stand a sway brace against it. Esc or right-click cancels.":
-    "انقر على نقطتين عبر بروز معلّق — مباشرةً على الأوجه الحمراء — لوضع جدار قابل للكسر على امتداد الخط. وانقر مرة واحدة على جانب رأسي لإضافة دعامة تمنع التمايل بمحاذاته. اضغط Esc أو انقر بزر الفأرة الأيمن للإلغاء.",
 
   // Summaries & Readout Notes
   "off": "إيقاف",
@@ -414,4 +409,17 @@ export default {
   "{n} pin": { one: "{n} دبوس", other: "{n} دبابيس" },
   "The pins attach each wall to the part, as a resin print needs.": "تربط الدبابيس كل جدار بالقطعة، كما تحتاج طباعة الراتنج.",
   "resin": "راتنج",
+  // Sway braces: hover preview, cross ribs, tall-wall rib height (#318)
+  "Brace walls above": "تدعيم الجدران الأعلى من",
+  "Walls taller than this height get face ribs. 5 cm or more; default 10 cm.": "تحصل الجدران الأعلى من هذا الارتفاع على أضلاع على الوجهين. 5 سم أو أكثر؛ الافتراضي 10 سم.",
+  "Walls taller than the selected height get triangular ribs at the plate, off both faces, so they don't sway as they print. Untick for plain walls.": "تحصل الجدران الأعلى من الارتفاع المحدد على أضلاع مثلثة عند السرير، على الوجهين، كي لا تتمايل أثناء الطباعة. ألغِ التحديد لجدران عادية.",
+  "Stand tapered buttress ribs against the upright sides of a tall part, tied on with tines all the way up, so it doesn't drift or wobble as it grows. In Draw, hover an upright side to preview one, and click to add it.": "أضف دعامات تقوية مخروطية بمحاذاة الجوانب الرأسية للقطعة الطويلة، وثبّتها بأسنان على امتداد الارتفاع كله لمنع انزياح القطعة أو تمايلها كلما ارتفعت أثناء الطباعة. في وضع «الرسم»، مرّر المؤشر فوق جانب رأسي لمعاينة دعامة، وانقر لإضافتها.",
+  "Cross-rib height": "ارتفاع الأضلاع العرضية",
+  "% of height": "% من الارتفاع",
+  "Cross-rib height as a percentage of sway brace height. 10–90%, default 50%. Requires Brace tall walls and the brace to exceed its start height. Does not change the horizontal reach.": "ارتفاع الأضلاع العرضية كنسبة مئوية من ارتفاع دعامة منع التمايل. 10–90%، الافتراضي 50%. يتطلب «تدعيم الجدران العالية» ودعامة أعلى من ارتفاع البدء الخاص به. لا يغيّر الامتداد على السرير.",
+  "{n} brace ribs": { one: "{n} ضلع دعامة", other: "{n} أضلاع دعامة" },
+  "that’s too low for a brace — move up the side": "هذا منخفض جدًا لدعامة — تحرّك إلى أعلى الجانب",
+  "Sway brace, full height: {mm} mm": "دعامة منع التمايل، بالارتفاع الكامل: {mm} مم",
+  "Sway brace, {mm} mm tall — move up the side for full height": "دعامة منع التمايل، بارتفاع {mm} مم — تحرّك إلى أعلى الجانب للارتفاع الكامل",
+  "Click two points across an overhang — straight onto the red faces — to lay a breakaway wall along that line. Hover an upright side to preview a sway brace: its top follows the cursor, and near the top of the side it runs full height. Click to stand it. Esc or right-click cancels.": "انقر على نقطتين عبر بروز معلّق — مباشرةً على الأوجه الحمراء — لوضع جدار قابل للكسر على امتداد الخط. ومرّر المؤشر فوق جانب رأسي لمعاينة دعامة تمنع التمايل: يتبع أعلاها المؤشر، وقرب أعلى الجانب تمتد بالارتفاع الكامل. انقر لإضافتها. اضغط Esc أو انقر بزر الفأرة الأيمن للإلغاء.",
 };

@@ -29,7 +29,7 @@ const rows = () => [...pane.querySelectorAll(ROWS)].filter((r) => !r.closest('.o
 // The row that reveals a hidden one, by the hidden row's selector; null when no
 // switch here would (Remove selected waits on a wall being picked).
 const GATES = [
-  ['#tinegrip-fld, #tine-contact-offset-fld, #layerh-fld', () => el('tines').closest('label')],
+  ['#tinegrip-fld, #layerh-fld', () => el('tines').closest('label')],
   ['[data-pad-custom]', () => el('bed-pad').closest('label')],
   // the brace tine fields also hide with Tines off (settings.js syncSway)
   ['#sway-from-fld, #sway-spacing-fld', () => el(el('sway').checked ? 'tines' : 'sway').closest('label')],
