@@ -5,7 +5,7 @@
  */
 import * as THREE from 'three';
 import { buildFins, FIN, PAD } from '../fins.js';
-import { PROP } from '../prop.js';
+import { BRACE, PROP } from '../prop.js';
 import { CUT } from '../cutout.js';
 import { nozzle, wallLines } from '../nozzle.js';
 import { el } from './dom.js';
@@ -127,6 +127,8 @@ function finOpts() {
            tunables: { padH: FIN.padH,
                        padGrab: PAD.grab, padStyle: PAD.style, padCustom: { ...PAD.custom },
                        propGap: PROP.gap,
+                       tineContactOffset: PROP.tineContactOffset,
+                       tallRibsHeight: BRACE.tallH,
                        cutout: CUT.pattern,
                        iface: PROP.iface,
                        // tine direction (#309): resin pins instead of the comb
@@ -145,10 +147,15 @@ export function swayOpts() {
   return { uncappedDepth: el('full-brace-depth').checked, gripFrom: num('sway-from', 0),
            tineSpacing: num('sway-spacing', 6),
            reach: num('sway-depth', 15) / 100,
+           crossRise: Math.max(10, Math.min(90, num('sway-cross-height', 50))) / 100,
            gap: PROP.gap,
+           tineContactOffset: PROP.tineContactOffset,
            tines: el('tines').checked,
            iface: PROP.iface,
-           layerHeight: el('layer-height').valueAsNumber };
+           layerHeight: el('layer-height').valueAsNumber,
+           // "Brace tall walls" cross-ribs a brace over its start height, the same
+           // threshold the drawn walls use; unticked leaves the brace plain.
+           crossAbove: el('tall-ribs').checked ? BRACE.tallH : Infinity };
 }
 
 function makeFinWorker() {

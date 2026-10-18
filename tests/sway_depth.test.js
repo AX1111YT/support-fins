@@ -30,13 +30,13 @@ Deno.test('Sway depth: default/off is identical; opt-in reaches 5/15/50% with th
 
 Deno.test('Sway depth: expanded Draw foot still refuses a wall beyond the old 60 mm footprint', () => {
   const topo=post(), result=analyze(topo,45,ID), face=side(topo,-1,-60);
-  const normal=swayAtFace(topo,result,ID,face,[0,-60,400],opts);
-  const full=swayAtFace(topo,result,ID,face,[0,-60,400],{...opts,uncappedDepth:true});
+  const normal=swayAtFace(topo,result,ID,face,[0,-60,1000],opts);
+  const full=swayAtFace(topo,result,ID,face,[0,-60,1000],{...opts,uncappedDepth:true});
   assert(normal.ok && full.ok);
   const p=full.foot[0].map((v,i)=>v+0.85*(full.foot[1][i]-v));
   const wall=[[p[0]-10,p[1],0],[p[0]+10,p[1],0]];
   assert(!swayClashesWall(normal,[wall]) && swayClashesWall(full,[wall]));
-  const blocked=swayAtFace(topo,result,ID,face,[0,-60,400],{...opts,uncappedDepth:true},{walls:[wall]});
+  const blocked=swayAtFace(topo,result,ID,face,[0,-60,1000],{...opts,uncappedDepth:true},{walls:[wall]});
   assert(!blocked.ok && /would fuse/.test(blocked.reason), 'expanded foot ignores existing wall');
 });
 
@@ -44,17 +44,17 @@ Deno.test('Sway depth: deeper braces facing across a channel still refuse overla
   const pos=Float32Array.from([...block(-40,40,-160,-100,0,1000),...block(-40,40,100,160,0,1000)]);
   const topo=buildTopology({getAttribute:()=>({array:pos})}), result=analyze(topo,45,ID);
   const a=side(topo,1,-100), b=side(topo,-1,100), full={...opts,uncappedDepth:true};
-  const first=swayAtFace(topo,result,ID,a,[0,-100,400],full);
+  const first=swayAtFace(topo,result,ID,a,[0,-100,1000],full);
   assert(first.ok, first.reason);
-  const across=swayAtFace(topo,result,ID,b,[0,100,400],full,[first]);
+  const across=swayAtFace(topo,result,ID,b,[0,100,1000],full,[first]);
   assert(!across.ok && /another brace/.test(across.reason), 'opposing deeper braces overlap');
 });
 
 Deno.test('Sway depth: a model obstacle in the expanded footprint is still rejected', () => {
   const pos=Float32Array.from([...block(-80,80,-60,60,0,1000),...block(-5,5,-200,-170,0,50)]);
   const topo=buildTopology({getAttribute:()=>({array:pos})}), result=analyze(topo,45,ID), face=side(topo,-1,-60);
-  assert(swayAtFace(topo,result,ID,face,[0,-60,400],opts).ok, 'control brace is blocked');
-  const full=swayAtFace(topo,result,ID,face,[0,-60,400],{...opts,uncappedDepth:true});
+  assert(swayAtFace(topo,result,ID,face,[0,-60,1000],opts).ok, 'control brace is blocked');
+  const full=swayAtFace(topo,result,ID,face,[0,-60,1000],{...opts,uncappedDepth:true});
   assert(!full.ok && typeof full.reason==='string', 'expanded brace passes through obstacle');
 });
 

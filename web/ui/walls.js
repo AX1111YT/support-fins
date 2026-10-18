@@ -371,7 +371,7 @@ function placeSway(hit) {
 export function syncDrawControls() {
   el('draw-controls').hidden = !drawShown();
   el('draw-hint').hidden = !drawActive();
-  el('draw-hint').innerHTML = t('Click two points across an overhang — straight onto the red faces — to lay a breakaway wall along that line. Click an upright side once to stand a sway brace against it. Esc or right-click cancels.');
+  el('draw-hint').innerHTML = t('Click two points across an overhang — straight onto the red faces — to lay a breakaway wall along that line. Click an upright side once to stand a sway brace up to the clicked height. Esc or right-click cancels.');
 }
 
 // Clear acts on the hand-drawn breakaway walls -- the thing both Draw and the

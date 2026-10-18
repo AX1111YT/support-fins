@@ -5,7 +5,7 @@ import { t } from './i18n.js';
  * sections with their one-line recaps. Owns finsVisible / finMode / drawAugment.
  */
 import { applyTunables, FIN, PAD } from '../fins.js';
-import { PROP } from '../prop.js';
+import { BRACE, PROP } from '../prop.js';
 import { CUT } from '../cutout.js';
 import { MATERIAL } from '../materials.js';
 import { applyNozzle, applyWallLines, wallLinesFit } from '../nozzle.js';
@@ -163,6 +163,7 @@ function syncTineGrip() {
   const pins = on && el('tine-dir').value === 'vertical';
   el('pindepth-fld').hidden = !pins;
   el('resin-note').hidden = !pins;
+  el('tine-contact-offset-fld').hidden = !on;
   // The Light pad is one layer tall, and the interface band is one layer of the
   // wall top (prop/crest.js), so both read the layer height too.
   // Resin pins are no layer tall, so vertical tines don't need it either.
@@ -191,6 +192,7 @@ function syncSway() {
   el('sway-spacing-fld').hidden = !on || !el('tines').checked;
   el('sway-depth-fld').hidden = !on;
   el('full-brace-depth-fld').hidden = !on;
+  el('sway-cross-height-fld').hidden = !on || !el('tall-ribs').checked;
   syncDrawControls();
   syncSectionSums();
 }
@@ -200,9 +202,15 @@ el('sway').addEventListener('change', () => {
 });
 el('tines').addEventListener('change', syncSway);
 el('full-brace-depth').addEventListener('change', () => refreshFins());
-for (const id of ['sway-from', 'sway-spacing', 'sway-depth']) {
+for (const id of ['sway-from', 'sway-spacing', 'sway-depth', 'sway-cross-height']) {
   el(id).addEventListener('input', () => debouncedRefresh());
 }
+el('sway-cross-height').addEventListener('change', () => {
+  const input = el('sway-cross-height'), v = input.valueAsNumber;
+  input.value = String(Number.isFinite(v) ? Math.max(+input.min, Math.min(+input.max, v)) : 50);
+  debouncedRefresh();
+});
+el('tall-ribs').addEventListener('change', syncSway);
 
 // Gap tuning. PROP.gap / PAD.grab are read fresh on every build, so setting them
 // here and rebuilding is all it takes. Clamp to the input's own range so a typed
@@ -215,6 +223,13 @@ function wireGap(id, obj, key, lo, hi) {
   });
 }
 wireGap('gap', PROP, 'gap', 0.1, 0.4);
+wireGap('tine-contact-offset', PROP, 'tineContactOffset', -0.2, 0.2);
+el('tine-contact-offset').addEventListener('change', () => {
+  const input = el('tine-contact-offset'), v = input.valueAsNumber;
+  PROP.tineContactOffset = Number.isFinite(v) ? Math.max(-0.2, Math.min(0.2, v)) : -0.01;
+  input.value = String(PROP.tineContactOffset);
+  debouncedRefresh();
+});
 
 // Wall cutouts (issue #34). CUT.pattern is read fresh by every wall sweep -- the
 // drawn walls here on the page, the auto walls in the Worker via tunables.
@@ -227,7 +242,18 @@ el('plate-only').addEventListener('change', () => refreshFins());
 // Long walls: Full coverage's rows (fins/rows.js), read by the build in the Worker.
 el('long-walls').addEventListener('change', () => refreshFins());
 // Brace tall walls: Auto's in the Worker (fins/tall.js), drawn ones on the page.
-el('tall-ribs').addEventListener('change', () => refreshFins());
+function syncTallRibs() {
+  el('tall-ribs-height-fld').hidden = !el('tall-ribs').checked;
+  const input = el('tall-ribs-height'), v = input.valueAsNumber;
+  if (Number.isFinite(v)) BRACE.tallH = Math.min(+input.max, Math.max(+input.min, v)) * 10;
+}
+el('tall-ribs').addEventListener('change', () => { syncTallRibs(); refreshFins(); });
+el('tall-ribs-height').addEventListener('input', () => { syncTallRibs(); debouncedRefresh(); });
+el('tall-ribs-height').addEventListener('change', () => {
+  syncTallRibs();
+  el('tall-ribs-height').value = String(BRACE.tallH / 10);
+  debouncedRefresh();
+});
 // Curved walls (#25): read by Auto's build in the Worker (finbuild.js finOpts).
 el('curved-walls').addEventListener('change', () => refreshFins());
 
@@ -401,11 +427,15 @@ export function initSettings() {
   syncTineGrip();
   syncPadStyle();
   syncSway();
+  syncTallRibs();
   CUT.pattern = el('cutout').value;   // a reload can keep the browser's last pick
   PROP.iface = ifaceMode();
   applyTunables(tineDirTunables());   // ...and its last tine direction and pin depth (#309)
   const gap = el('gap').valueAsNumber;   // ...and its last Support gap (wireGap's range)
   if (Number.isFinite(gap)) PROP.gap = Math.min(0.4, Math.max(0.1, gap));
+  const contact = el('tine-contact-offset'), v = contact.valueAsNumber;
+  PROP.tineContactOffset = Number.isFinite(v) ? Math.max(-0.2, Math.min(0.2, v)) : -0.01;
+  contact.value = String(PROP.tineContactOffset);
   applyNozzle(Number(el('nozzle').value));   // ...and the widths to the remembered nozzle
   applyWallLines(Number(el('wall-lines').value));
   fitWallLines();

@@ -9,10 +9,10 @@ import { insidePart } from './inside.js';
  * Where a tine meets the part, so it can KISS the surface instead of running on into
  * it: for each side edge of the tine (across = +-`half`) at its bottom and its top
  * (`zb`, `zt`, a hair inside the layer), the distance along the bite heading (dx, dy)
- * at which the part's solid begins, plus TRIM_KISS so the two still overlap (flush
- * faces weld into one non-manifold body in Fusion). The caller builds the tine's end
- * through those four corners, so on a sloped or curved underside the end leans with
- * the surface and no part of the tine sits inside the part.
+ * at which the part's solid begins, minus `contactOffset`: positive leaves air,
+ * zero is flush, negative bites into the part (default -0.01 keeps the old overlap).
+ * The caller builds the tine's end through those four corners, so on a sloped or
+ * curved underside the end leans with the surface.
  *
  * A wall tine used to run its full reach on into the part. A slicer unions that
  * buried stretch away (the site's 3MF and STL put part and supports in one object),
@@ -27,8 +27,9 @@ import { insidePart } from './inside.js';
  * point on the face (prop/tines.js, sway.js). `back` bounds how far behind that the
  * end may pull back. Returns { bot: [left, right], top: [...] }.
  */
-const TRIM_KISS = 0.01, TRIM_MIN = 0.05, TRIM_Z = 0.01, STEP = 0.1;
-export function kissEnds(topo, rot, offset, x, y, dx, dy, zb, zt, { half, back, reach: R }) {
+const TRIM_MIN = 0.05, TRIM_Z = 0.01, STEP = 0.1;
+export function kissEnds(topo, rot, offset, x, y, dx, dy, zb, zt, { half, back, reach: R, contactOffset = -0.01 }) {
+  const contact = Number.isFinite(contactOffset) ? Math.max(-0.2, Math.min(0.2, contactOffset)) : -0.01;
   // The end may lean out past `reach` at the bottom: on a 40 deg underside the
   // surface there is ~0.24 mm farther than at the top, and capping it at the reach cut
   // the tine short of the surface at mid-layer, where the slicer reads it.
@@ -56,9 +57,9 @@ export function kissEnds(topo, rot, offset, x, y, dx, dy, zb, zt, { half, back, 
     // answer stands as it was.
     let prev = lo0;
     for (let d = lo0 + STEP; d < e - STEP / 2; prev = d, d += STEP) {
-      if (inside(d)) return (prev === lo0 && inside(lo0) ? lo0 : bisect(prev, d, 10) + TRIM_KISS);
+      if (inside(d)) return (prev === lo0 && inside(lo0) ? lo0 : bisect(prev, d, 10) - contact);
     }
-    return hi === null ? R : e + TRIM_KISS;
+    return hi === null ? R : e - contact;
   };
   // measured a hair inside the layer (a part face can sit exactly on a layer line),
   // then carried out to the tine's real bottom and top along the same lean

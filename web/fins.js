@@ -36,7 +36,7 @@
  */
 import { floatingPieces } from './pieces.js';
 import { findWallPatches } from './planes.js';
-import { buildProps, crestOn, crestPart, noProps, PROP } from './prop.js';
+import { BRACE, buildProps, crestOn, crestPart, noProps, PROP } from './prop.js';
 import { buildSwayBraces } from './sway.js';
 import { CUT, CUTOUT_PATTERNS } from './cutout.js';
 import { FIN } from './fins/config.js';
@@ -97,6 +97,10 @@ export function applyTunables(t) {
   if (['auto', 'light', 'sure', 'custom'].includes(t.padStyle)) PAD.style = t.padStyle;
   if (t.padCustom) for (const k of Object.keys(PAD.custom)) set(PAD.custom, k, t.padCustom[k]);
   set(PROP, 'gap', t.propGap);
+  if (Number.isFinite(t.tineContactOffset)) PROP.tineContactOffset = Math.max(-0.2, Math.min(0.2, t.tineContactOffset));
+  if (Number.isFinite(t.tallRibsHeight) && t.tallRibsHeight > 0) {
+    BRACE.tallH = Math.min(2000, Math.max(1, t.tallRibsHeight));
+  }
   // Tines per wall, exact (0 = off, the spacing rules decide): the tine coupon asks
   // how few still hold. Calibration only.
   if (Number.isInteger(t.tinesPerWall) && t.tinesPerWall >= 0) PROP.tinesPerWall = t.tinesPerWall;
@@ -162,7 +166,13 @@ function buildFinsAndBraces(topo, result, rot, opts = {}) {
   // one of those, a brace is no longer a piece that snaps off by itself.
   const walls = (built.fins ?? []).map((f) => f.line).filter((l) => Array.isArray(l) && l.length);
   const sw = buildSwayBraces(topo, result, rot,
-    { ...opts.sway, tines: opts.tines, layerHeight: opts.layerHeight, iface: PROP.iface, avoid: { walls } });
+    { ...opts.sway, tines: opts.tines, layerHeight: opts.layerHeight, iface: PROP.iface, avoid: { walls },
+      tineContactOffset: opts.sway.tineContactOffset ?? PROP.tineContactOffset,
+      // "Brace tall walls" cross-ribs a brace over its start height, exactly as it
+      // does the drawn walls. The page sends the threshold through swayOpts (it is
+      // Infinity when the box is unticked); a caller that says nothing -- the
+      // plugins, the golden scenes -- keeps the plain brace it always got.
+      crossAbove: opts.tallRibs === false ? Infinity : (opts.sway?.crossAbove ?? Infinity) });
   // Each brace also gets a fin record: the Auto view draws and exports only the
   // triangles some record claims (per-fin removal), so an unrecorded brace would
   // be counted in the readout but never shown or written out.
@@ -180,11 +190,13 @@ function buildFinsAndBraces(topo, result, rot, opts = {}) {
     triangles: [...built.triangles, ...sw.triangles],
     fins: [...fins, ...braces],
     sway: { count: sw.count, tines: sw.tines, skipped: sw.skipped, reason: sw.reason,
+            // Cross ribs ("Brace tall walls") built on the braces, for the readout
+            cross: (sw.ribs ?? []).reduce((a, r) => a + (r.cross ?? 0), 0),
             // The outlines travel back so a brace the user then clicks by hand can be
             // checked against these: Auto builds in the Worker, so the page has no
             // other way to know where they stand. Plain data, structured-cloneable.
             braces: (sw.ribs ?? []).map((r) => ({ foot: r.foot, halfW: r.halfW, th: r.th,
-                                          height: r.height, levels: r.levels })) },
+                                          height: r.height, levels: r.levels, arms: r.arms })) },
   };
 }
 

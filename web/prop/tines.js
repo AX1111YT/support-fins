@@ -250,7 +250,7 @@ function comb(line, tris, topo, rot, offset, out, stepArg = PROP.tineStep,
     // quad in (along, across): from -overlap (into the wall) to where the tine meets
     // the part, its end leaning with the surface between bottom and top (kissEnds).
     const e = kissEnds(topo, rot, offset, x, y, dirx, diry, tineBot, tineTop,
-                       { half, back: PROP.tineOverlap, reach });
+                       { half, back: PROP.tineOverlap, reach, contactOffset: PROP.tineContactOffset });
     const ov = -PROP.tineOverlap;
     const outline = (h) => [[ov, -half], [e[h][0], -half], [e[h][1], half], [ov, half]];
     loftExtrude(outline('bot'), outline('top'), tineBot, tineTop, P, out);

@@ -194,9 +194,11 @@ function updateDrawReadout(built, ms) {
   const braces = ok.filter((w) => w.kind === 'sway').length;
   const walls = ok.length - braces;
   const ribs = ok.reduce((a, w) => a + (w.kind === 'sway' ? 0 : w.info?.braces ?? 0), 0);
+  const crosses = ok.reduce((a, w) => a + (w.kind === 'sway' ? w.info?.cross ?? 0 : 0), 0);
   const parts = [];
   if (walls) parts.push(tn('{n} drawn wall', '{n} drawn walls', walls) + (ribs ? ` · ${tn('{n} wall rib', '{n} wall ribs', ribs)}` : ''));
-  if (braces) parts.push(tn('{n} sway brace', '{n} sway braces', braces));
+  if (braces) parts.push(tn('{n} sway brace', '{n} sway braces', braces)
+    + (crosses ? ` · ${tn('{n} brace rib', '{n} brace ribs', crosses)}` : ''));
   box.textContent = ok.length
     ? parts.join(' + ') + (tines ? ` · ${tineCount(tines)}` : '')
     : t('none yet');
@@ -325,6 +327,7 @@ function updateFinReadout(built, ms) {
   const swayTxt = sw?.count
     ? `${autoTxt || drawnTxt ? ' + ' : ''}${tn('{n} sway brace', '{n} sway braces', sw.count)}`
       + (sw.tines ? ` · ${t('{n} brace tines', { n: sw.tines })}` : '')
+      + (sw.cross ? ` · ${tn('{n} brace rib', '{n} brace ribs', sw.cross)}` : '')
     : '';
   box.textContent = (autoTxt + ribTxt + drawnTxt + swayTxt + removedTxt) || t('none possible');
   box.classList.toggle('warn', n === 0 && !drawnOk && !sw?.count);
