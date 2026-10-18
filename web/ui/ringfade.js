@@ -19,10 +19,10 @@ export function initRingFade(gizmo) {
   g.updateMatrixWorld = (force) => {
     own(force);
     if (fade >= 1) return;
+    // the rings only: the axis guide line (helper.rotate) is never reset there, so
+    // scaling it in place would compound every frame and leave it gone
     const mats = new Set();
-    for (const group of [g.gizmo.rotate, g.helper.rotate]) {
-      group.traverse((o) => { if (o.material) mats.add(o.material); });
-    }
+    g.gizmo.rotate.traverse((o) => { if (o.material) mats.add(o.material); });
     for (const m of mats) m.opacity *= fade;
   };
 }
