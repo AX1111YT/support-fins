@@ -109,7 +109,7 @@ const formOf = (form) => (form && typeof form === 'object'
   ? { 'wall-lines': '2', 'long-walls': false, 'tall-ribs': false, 'curved-walls': false,
       'sway-cross-height': '50', 'tall-ribs-height': '10', ...Object.fromEntries(Object.entries(form)
     .filter(([id, v]) => !VIEWER_IDS.has(id) && settable(id, v))) }
-  : { 'sway-cross-height': '50', 'tall-ribs-height': '10' });
+  : {});
 
 /**
  * Restore `s` onto the part setPart just loaded: { n } supports restored, or

@@ -203,6 +203,7 @@ export function rebuildDrawn() {
   }
   drawnMesh = meshFrom(drawnTris, drawMaterial, ifaceMaterial);
   braceMemo.stamp = null;   // the braces a preview stands clear of have moved
+  if (braceShown) dropGhost();
   syncSelection();
 }
 
@@ -361,6 +362,7 @@ function autoSupports() {
 // that can't take one turns the cursor red and says why, before any click.
 const SNAP_TOP = 0.75;
 const STEP_Z = 2;   // capped tops in 2 mm steps, so a creeping cursor reuses its ghost
+const MEMO_MAX = 200;
 const braceTip = el('brace-tip');
 let braceMemo = { stamp: null, map: new Map() };
 let braceShown = null;   // the braceAt key the ghost and tip show now
@@ -374,17 +376,26 @@ let braceQueued = null;
  */
 function braceAt(faceIndex, p) {
   const opts = swayOpts();
-  const stamp = [lastResult, lastBuilt, drawnWalls, drawnWalls.length, finsVisible, autoLike(),
+  const stamp = [lastResult, lastBuilt, removedIds, drawnWalls, drawnWalls.length, finsVisible, autoLike(),
                  rotM3.elements.join(), JSON.stringify(opts)];
   if (!braceMemo.stamp || braceMemo.stamp.some((v, i) => v !== stamp[i])) braceMemo = { stamp, map: new Map() };
   const memo = (key, f) => {
-    if (!braceMemo.map.has(key)) braceMemo.map.set(key, f());
-    return braceMemo.map.get(key);
+    const m = braceMemo.map;
+    if (!m.has(key)) {
+      m.set(key, f());
+      if (m.size > MEMO_MAX) m.delete(m.keys().next().value);   // oldest first
+    }
+    return m.get(key);
   };
   const auto = autoSupports();
   const avoid = { braces: [...auto.braces, ...drawnWalls.filter((w) => w.kind === 'sway' && w.ok).map((w) => w.info)],
                   walls: auto.walls };
-  const x = Math.round(p[0]), y = Math.round(p[1]), at = `${faceIndex}|${x}|${y}`;
+  // x, y to the mm, slid back onto the face's plane: the stored point has to stay on
+  // the face, or a reopened session's nearestFace can pick the one beside it
+  const n = topology.nrm, r = rotM3.elements, f = faceIndex * 3;
+  const nx = r[0] * n[f] + r[3] * n[f + 1] + r[6] * n[f + 2], ny = r[1] * n[f] + r[4] * n[f + 1] + r[7] * n[f + 2];
+  const rx = Math.round(p[0]), ry = Math.round(p[1]), off = ((rx - p[0]) * nx + (ry - p[1]) * ny) / (nx * nx + ny * ny || 1);
+  const x = rx - off * nx, y = ry - off * ny, at = `${faceIndex}|${rx}|${ry}`;
   const full = memo(at, () => swayAtFace(topology, lastResult, rotM3.elements, faceIndex, [x, y, p[2]],
                                          { ...opts, full: true }, avoid));
   if (!full.ok || p[2] >= SNAP_TOP * full.height) return { r: full, full: true, point: [x, y, p[2]], key: at };
@@ -485,10 +496,12 @@ export function drawHover(ev) {
     updateBracePreview(hit, ev);
     renderer.domElement.style.cursor = 'crosshair';
   } else if (hit) {
+    braceQueued = null;
     if (braceShown) dropGhost();
     updatePreview(hit.point);
     renderer.domElement.style.cursor = 'crosshair';
   } else {
+    braceQueued = null;
     drawCursor.visible = drawBand.visible = false;
     dropGhost();
     renderer.domElement.style.cursor = '';

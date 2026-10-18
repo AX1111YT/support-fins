@@ -290,7 +290,7 @@ export function buildSwayRib(p, uc, partTris, topo, rot, offset, opts = {}) {
     insets = [];
     heights = [0, H];
     if (Number.isFinite(opts.maxHeight)) {
-      const n = Math.ceil(H / 8);
+      const n = Math.ceil(H / 8 - 1e-6);   // a top on a band edge (16 mm) gives 2 bands, not 3 from a round-trip's 1e-15
       heights = Array.from({ length: n + 1 }, (_, i) => H * i / n);
       const bands = heights.slice(1).map((z, i) => shiftIn(half, heights[i], z) + S.gap);
       // Both ends of each segment stay outside that entire band's surface.
