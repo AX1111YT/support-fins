@@ -276,6 +276,7 @@ export function removeSelected() {
   selectedWall = null;
   drawMsg = '';
   rebuildDrawn();
+  syncDrawControls();   // the last one gone in Auto hides Clear again
   updateReadout(lastBuilt);
   updateFit();
 }
@@ -462,6 +463,7 @@ function placeSway(hit) {
   drawnWalls.push({ kind: 'sway', face: hit.faceIndex, ...(full ? {} : { capped: true }),
                     a: part.worldToLocal(new THREE.Vector3(point[0], point[1], point[2])) });
   rebuildDrawn();
+  syncDrawControls();   // Auto's first brace by hand brings up Clear / Remove selected
   updateReadout(lastBuilt);
   updateFit();
 }
@@ -522,9 +524,15 @@ export function braceHover(ev) {
     renderer.domElement.style.cursor = 'crosshair';
     return true;
   }
+  dropBracePreview();
+  return false;
+}
+
+/** Hide braceActive's cursor, ghost and tip (off an upright side, or while an orbit
+ *  or a ring drag has the pointer). */
+export function dropBracePreview() {
   braceQueued = null;
   if (drawCursor.visible) { drawCursor.visible = false; dropGhost(); renderer.domElement.style.cursor = ''; }
-  return false;
 }
 
 /** braceActive's click: select a support placed by hand, or stand a brace on an

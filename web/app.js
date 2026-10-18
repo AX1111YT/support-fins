@@ -34,7 +34,7 @@ import './ui/scale.js';
 import { updateReadout } from './ui/readout.js';
 import {
   drawnWalls, drawnTris, drawStart, selectedWall, drawActive, sizeMarkers, clearPreview,
-  selectWall, removeSelected, drawHover, drawClick, braceActive, braceHover, braceClick,
+  selectWall, removeSelected, drawHover, drawClick, braceActive, braceHover, braceClick, dropBracePreview,
 } from './ui/walls.js';
 import { finTris, padTris, lastBuilt } from './ui/finbuild.js';
 import { initSettings } from './ui/settings.js';
@@ -96,9 +96,10 @@ renderer.domElement.addEventListener('pointermove', (ev) => {
     return;
   }
   // Auto / Full with Sway braces on: an upright side previews the brace a click stands.
-  if (!layActive() && braceActive() && !gizmo.dragging && !gizmo.axis && !pressAt && braceHover(ev)) {
-    hoverFace.visible = false;
-    return;
+  // An orbit drag or the rotate rings own the pointer: the preview goes, not left behind.
+  if (!layActive() && braceActive()) {
+    if (gizmo.dragging || gizmo.axis || pressAt) dropBracePreview();
+    else if (braceHover(ev)) { hoverFace.visible = false; return; }
   }
   // Face-lay hover ONLY while armed: otherwise a highlighted, clickable-looking
   // face invites the stray click that silently re-lays the part. Off by default,
