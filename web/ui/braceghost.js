@@ -3,11 +3,13 @@
  * fades in and out instead of popping, a big jump in height cross-fades, a pointer
  * slipping off the upright side for a moment (an edge, a small facet) doesn't blink
  * it, the label eases after the cursor, and the cursor dot eases to amber on a spot
- * that can't take a brace. Nothing here changes which brace a click stands.
+ * that can't take a brace, and the rotate rings fade back while it's up (ringfade.js).
+ * Nothing here changes which brace a click stands.
  */
 import * as THREE from 'three';
 import { scene, meshFrom, MODEL, clip, requestRender } from './scene.js';
 import { el } from './dom.js';
+import { fadeRings } from './ringfade.js';
 
 const FADE_MS = 120;     // ghost fade in / out
 const GRACE_MS = 150;    // off the side this long before the preview starts to fade
@@ -50,6 +52,7 @@ export function showBrace(tris, h, text, bad) {
     height = h;
   }
   cursorBad = bad;
+  fadeRings(true);
   tip.textContent = text;
   tip.classList.toggle('bad', bad);
   tip.classList.add('show');
@@ -85,6 +88,7 @@ export function dropBrace() {
   ghosts = [];
   height = null;
   cursorBad = false;
+  fadeRings(false);
   if (cursorMat) cursorMat.color.copy(CURSOR_OK);
   tip.classList.remove('show');
   tipAt = null;
@@ -107,6 +111,7 @@ function finishGrace() {
 
 function fadeAll() {
   for (const g of ghosts) g.on = false;
+  fadeRings(false);
   height = null;
   cursorBad = false;
   tip.classList.remove('show');

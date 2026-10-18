@@ -13,6 +13,7 @@ import { keptHit, planeHandleShown } from './section.js';
 import { removeActive } from './remove.js';
 import { histPush, beginGesture, commitGesture } from './history.js';
 import { hideSuggestions, clearSuggestionMark } from './suggest.js';
+import { initRingFade } from './ringfade.js';
 import { drawActive, clearPreview } from './walls.js';
 import { refreshFins } from './finbuild.js';
 import { finsVisible } from './settings.js';
@@ -24,6 +25,7 @@ import { part, topology, shade } from './part.js';
 export const gizmo = new TransformControls(camera, renderer.domElement);
 gizmo.setMode('rotate');
 gizmo.setSize(0.85);
+initRingFade(gizmo);   // faint while a sway brace is aimed (ringfade.js)
 scene.add(gizmo.getHelper ? gizmo.getHelper() : gizmo);
 const dragFrom = new THREE.Quaternion();   // pose at drag start: did the drag turn it?
 let dragSnap = null;                       // undo state at drag start (history.js)
