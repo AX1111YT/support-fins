@@ -9,6 +9,7 @@ import * as THREE from 'three';
 import { drawnWall } from '../draw.js';
 import { planGrid } from '../fins/tall.js';
 import { swayAtFace, faceIsUpright } from '../sway.js';
+import { initBraceGhost, showBrace, moveTip, hideBrace, dropBrace, braceGrace } from './braceghost.js';
 import { el } from './dom.js';
 import { viewport, renderer, scene, camera, meshFrom, ifaceMaterial, raycaster, pointer, clip, MODEL } from './scene.js';
 import { keptHit } from './section.js';
@@ -63,7 +64,7 @@ const guideMat = (color) => new THREE.MeshBasicMaterial(
 const drawDot = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 14), guideMat(0x59d98e));
 // The cursor is see-through so the surface under it stays readable; the OS
 // crosshair is the precise aim point, this dot just shows the surface hit.
-const CURSOR_OK = 0xcffbe4, CURSOR_BAD = 0xffb454;
+const CURSOR_OK = 0xcffbe4;   // braceghost.js eases it to amber on a refused brace spot
 const drawCursor = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 14),
   new THREE.MeshBasicMaterial({ color: CURSOR_OK, depthTest: false, transparent: true, opacity: 0.6 }));
 const bandGeom = new THREE.BufferGeometry()
@@ -71,6 +72,7 @@ const bandGeom = new THREE.BufferGeometry()
 const drawBand = new THREE.Line(bandGeom,
   new THREE.LineBasicMaterial({ color: 0x6dffab, depthTest: false, transparent: true }));
 drawBand.frustumCulled = false;   // its endpoints move every frame; stale bounds would cull it
+initBraceGhost(drawCursor.material);
 for (const o of [drawDot, drawCursor, drawBand]) {
   o.visible = false;
   o.renderOrder = 11;             // above the hoverFace (renderOrder 1) and the part
@@ -132,8 +134,7 @@ export function clearPreview() {
 function dropGhost() {
   if (ghostMesh) { scene.remove(ghostMesh); ghostMesh.geometry.dispose(); ghostMesh = null; }
   braceShown = null;
-  braceTip.classList.remove('show');
-  drawCursor.material.color.setHex(CURSOR_OK);
+  dropBrace();
 }
 
 /** Rebuild the committed drawn walls for the current orientation. */
@@ -365,11 +366,11 @@ function autoSupports() {
 // The ghost IS the brace the click builds (both go through braceAt). Its top follows
 // the cursor; in the top quarter of what a brace could reach there it snaps to the
 // whole face, the height a brace always had before the clicked-height cap. A spot
-// that can't take one turns the cursor red and says why, before any click.
+// that can't take one turns the cursor amber and says why, before any click.
+// braceghost.js fades and eases what this shows, so moving about doesn't flash.
 const SNAP_TOP = 0.75;
-const STEP_Z = 2;   // capped tops in 2 mm steps, so a creeping cursor reuses its ghost
+const STEP_Z = 1;   // capped tops in 1 mm steps, so a creeping cursor reuses its ghost
 const MEMO_MAX = 200;
-const braceTip = el('brace-tip');
 let braceMemo = { stamp: null, map: new Map() };
 let braceShown = null;   // the braceAt key the ghost and tip show now
 let braceQueued = null;
@@ -415,8 +416,7 @@ function updateBracePreview(hit, ev) {
   drawCursor.position.copy(hit.point);
   drawCursor.visible = true;
   drawBand.visible = drawDot.visible = false;
-  braceTip.style.left = `${ev.clientX + 16}px`;
-  braceTip.style.top = `${ev.clientY + 16}px`;
+  moveTip(ev.clientX + 16, ev.clientY + 16);
   // at most one brace build per frame, as the wall ghost
   const already = !!braceQueued;
   braceQueued = { face: hit.faceIndex, p: [hit.point.x, hit.point.y, hit.point.z] };
@@ -427,25 +427,31 @@ function updateBracePreview(hit, ev) {
     if (!q || drawStart || !(drawActive() || braceActive())) return;
     const b = braceAt(q.face, q.p);
     if (b.key === braceShown) return;
-    dropGhost();
     braceShown = b.key;
-    if (b.r.ok) {
-      ghostMesh = meshFrom(b.r.tris, ghostMaterial);
-      ghostMesh?.layers.disable(MODEL);
-    } else drawCursor.material.color.setHex(CURSOR_BAD);
     const mm = Math.round(b.r.height ?? 0);
-    braceTip.textContent = !b.r.ok ? t(b.r.reason)
-      : b.full ? t('Sway brace, full height: {mm} mm', { mm })
-      : t('Sway brace, {mm} mm tall — move up the side for full height', { mm });
-    braceTip.classList.toggle('bad', !b.r.ok);
-    braceTip.classList.add('show');
+    showBrace(b.r.ok ? b.r.tris : null, b.r.height ?? 0,
+              !b.r.ok ? t(b.r.reason)
+              : b.full ? t('Brace · full height {mm} mm', { mm })
+              : t('Brace · {mm} mm · move up for full height', { mm }),
+              !b.r.ok);
   });
 }
 
 renderer.domElement.addEventListener('pointerleave', () => {
   braceQueued = null;
-  if (!drawStart) { drawCursor.visible = false; dropGhost(); }
+  if (!drawStart) { drawCursor.visible = false; braceShown = null; hideBrace(false); }
 });
+
+/** The pointer is on the part but off an upright side: the dot follows it, and the
+ *  brace stays a moment (an edge or a small facet on the way) before it fades. */
+function slipOff(hit, keepCursor) {
+  braceQueued = null;
+  if (!braceShown) return false;
+  braceShown = null;
+  drawCursor.position.copy(hit.point);
+  hideBrace(true, keepCursor ? null : () => { drawCursor.visible = false; });
+  return true;
+}
 
 /** Stand a sway brace on the upright face the user clicked: the one its preview showed. */
 function placeSway(hit) {
@@ -503,14 +509,19 @@ export function drawHover(ev) {
     updateBracePreview(hit, ev);
     renderer.domElement.style.cursor = 'crosshair';
   } else if (hit) {
-    braceQueued = null;
-    if (braceShown) dropGhost();
+    slipOff(hit, true);   // Draw's own cursor carries on over the rest of the part
     updatePreview(hit.point);
     renderer.domElement.style.cursor = 'crosshair';
+  } else if (!drawStart) {
+    drawBand.visible = false;
+    braceAway();   // off the part: a gap crossed on the way doesn't blink the brace
+    renderer.domElement.style.cursor = '';
   } else {
     braceQueued = null;
     drawCursor.visible = drawBand.visible = false;
-    dropGhost();
+    braceShown = null;
+    hideBrace(false);
+    if (ghostMesh) { scene.remove(ghostMesh); ghostMesh.geometry.dispose(); ghostMesh = null; }
     renderer.domElement.style.cursor = '';
   }
 }
@@ -524,15 +535,33 @@ export function braceHover(ev) {
     renderer.domElement.style.cursor = 'crosshair';
     return true;
   }
-  dropBracePreview();
+  if (hit && (slipOff(hit, false) || braceGrace())) {
+    drawCursor.position.copy(hit.point);   // still fading in its grace: keep following
+    return false;
+  }
+  if (!hit) braceAway();
   return false;
 }
 
-/** Hide braceActive's cursor, ghost and tip (off an upright side, or while an orbit
- *  or a ring drag has the pointer). */
+/** The pointer left the part (a gap, the background) or is over the rotate rings
+ *  without dragging: the same grace as slipOff, then the preview and its dot go. */
+export function braceAway() {
+  braceQueued = null;
+  if (!braceShown && !braceGrace()) {
+    if (drawCursor.visible) { drawCursor.visible = false; renderer.domElement.style.cursor = ''; }
+    return;
+  }
+  braceShown = null;
+  hideBrace(true, () => { drawCursor.visible = false; renderer.domElement.style.cursor = ''; });
+}
+
+/** Fade braceActive's ghost and tip and hide its cursor (an orbit or a ring drag
+ *  has the pointer). */
 export function dropBracePreview() {
   braceQueued = null;
-  if (drawCursor.visible) { drawCursor.visible = false; dropGhost(); renderer.domElement.style.cursor = ''; }
+  braceShown = null;
+  hideBrace(false);
+  if (drawCursor.visible) { drawCursor.visible = false; renderer.domElement.style.cursor = ''; }
 }
 
 /** braceActive's click: select a support placed by hand, or stand a brace on an

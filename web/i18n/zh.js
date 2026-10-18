@@ -529,7 +529,7 @@ export default {
   "Cross-rib height as a percentage of sway brace height. 10–90%, default 50%. Requires Brace tall walls and the brace to exceed its start height. Does not change the horizontal reach.": "十字肋高度占防晃撑高度的百分比。可调范围 10%～90%，默认 50%。需勾选「加固高墙」，且防晃撑超过加固起始高度才生效。不改变横向伸出长度。",
   "{n} brace ribs": { other: "{n} 条撑肋" },
   "that’s too low for a brace — move up the side": "此处太低，放不下防晃撑——请沿侧面上移",
-  "Sway brace, full height: {mm} mm": "防晃撑，全高：{mm} mm",
-  "Sway brace, {mm} mm tall — move up the side for full height": "防晃撑，高 {mm} mm——沿侧面上移可得全高",
+  "Brace · full height {mm} mm": "防晃撑 · 全高 {mm} mm",
+  "Brace · {mm} mm · move up for full height": "防晃撑 · {mm} mm · 上移可得全高",
   "Click two points across an overhang — straight onto the red faces — to lay a breakaway wall along that line. Hover an upright side to preview a sway brace: its top follows the cursor, and near the top of the side it runs full height. Click to stand it. Esc or right-click cancels.": "在悬垂面上点击两点（直接点在红色面上），即可沿该线生成一堵易拆墙。将鼠标悬停在直立侧面上可预览防晃撑：撑顶跟随光标，靠近侧面顶部时为全高。点击即可放置。按 Esc 或右键取消。",
 };

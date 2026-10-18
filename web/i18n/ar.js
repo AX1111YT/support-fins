@@ -419,7 +419,7 @@ export default {
   "Cross-rib height as a percentage of sway brace height. 10–90%, default 50%. Requires Brace tall walls and the brace to exceed its start height. Does not change the horizontal reach.": "ارتفاع الأضلاع العرضية كنسبة مئوية من ارتفاع دعامة منع التمايل. 10–90%، الافتراضي 50%. يتطلب «تدعيم الجدران العالية» ودعامة أعلى من ارتفاع البدء الخاص به. لا يغيّر الامتداد على السرير.",
   "{n} brace ribs": { one: "{n} ضلع دعامة", other: "{n} أضلاع دعامة" },
   "that’s too low for a brace — move up the side": "هذا منخفض جدًا لدعامة — تحرّك إلى أعلى الجانب",
-  "Sway brace, full height: {mm} mm": "دعامة منع التمايل، بالارتفاع الكامل: {mm} مم",
-  "Sway brace, {mm} mm tall — move up the side for full height": "دعامة منع التمايل، بارتفاع {mm} مم — تحرّك إلى أعلى الجانب للارتفاع الكامل",
+  "Brace · full height {mm} mm": "دعامة · الارتفاع الكامل {mm} مم",
+  "Brace · {mm} mm · move up for full height": "دعامة · {mm} مم · تحرّك لأعلى للارتفاع الكامل",
   "Click two points across an overhang — straight onto the red faces — to lay a breakaway wall along that line. Hover an upright side to preview a sway brace: its top follows the cursor, and near the top of the side it runs full height. Click to stand it. Esc or right-click cancels.": "انقر على نقطتين عبر بروز معلّق — مباشرةً على الأوجه الحمراء — لوضع جدار قابل للكسر على امتداد الخط. ومرّر المؤشر فوق جانب رأسي لمعاينة دعامة تمنع التمايل: يتبع أعلاها المؤشر، وقرب أعلى الجانب تمتد بالارتفاع الكامل. انقر لإضافتها. اضغط Esc أو انقر بزر الفأرة الأيمن للإلغاء.",
 };

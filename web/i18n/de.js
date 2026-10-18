@@ -435,7 +435,7 @@ export default {
   "Cross-rib height as a percentage of sway brace height. 10–90%, default 50%. Requires Brace tall walls and the brace to exceed its start height. Does not change the horizontal reach.": "Höhe der Kreuzrippen in Prozent der Stützrippen-Höhe. 10–90 %, Standard 50 %. Braucht „Hohe Wände versteifen“ und eine Stützrippe über dessen Starthöhe. Ändert die Reichweite auf dem Druckbett nicht.",
   "{n} brace ribs": { one: "{n} Kreuzrippe", other: "{n} Kreuzrippen" },
   "that’s too low for a brace — move up the side": "zu niedrig für eine Stützrippe – weiter oben an der Seite",
-  "Sway brace, full height: {mm} mm": "Stützrippe, volle Höhe: {mm} mm",
-  "Sway brace, {mm} mm tall — move up the side for full height": "Stützrippe, {mm} mm hoch – weiter oben an der Seite für volle Höhe",
+  "Brace · full height {mm} mm": "Stützrippe · volle Höhe {mm} mm",
+  "Brace · {mm} mm · move up for full height": "Stützrippe · {mm} mm · höher für volle Höhe",
   "Click two points across an overhang — straight onto the red faces — to lay a breakaway wall along that line. Hover an upright side to preview a sway brace: its top follows the cursor, and near the top of the side it runs full height. Click to stand it. Esc or right-click cancels.": "Klicken Sie zwei Punkte über einen Überhang – direkt auf die roten Flächen –, um eine Stützwand zu ziehen. Fahren Sie mit der Maus über eine aufrechte Seite, um eine Stützrippe vorab zu sehen: Ihre Oberkante folgt dem Mauszeiger, und nahe dem oberen Ende der Seite reicht sie über die volle Höhe. Klicken setzt sie. Esc oder Rechtsklick bricht ab.",
 };

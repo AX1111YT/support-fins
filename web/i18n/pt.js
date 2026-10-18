@@ -485,7 +485,7 @@ export default {
   "Cross-rib height as a percentage of sway brace height. 10–90%, default 50%. Requires Brace tall walls and the brace to exceed its start height. Does not change the horizontal reach.": "Altura das nervuras cruzadas como porcentagem da altura da escora lateral. 10–90%, padrão 50%. Exige Reforçar paredes altas e uma escora acima da altura inicial dele. Não muda o alcance na mesa.",
   "{n} brace ribs": { one: "{n} nervura de escora", other: "{n} nervuras de escora" },
   "that’s too low for a brace — move up the side": "baixo demais para uma escora — suba pelo lado",
-  "Sway brace, full height: {mm} mm": "Escora lateral, altura total: {mm} mm",
-  "Sway brace, {mm} mm tall — move up the side for full height": "Escora lateral, {mm} mm de altura — suba pelo lado para a altura total",
+  "Brace · full height {mm} mm": "Escora · altura total {mm} mm",
+  "Brace · {mm} mm · move up for full height": "Escora · {mm} mm · suba para altura total",
   "Click two points across an overhang — straight onto the red faces — to lay a breakaway wall along that line. Hover an upright side to preview a sway brace: its top follows the cursor, and near the top of the side it runs full height. Click to stand it. Esc or right-click cancels.": "Clique em dois pontos atravessando um balanço — direto nas faces vermelhas — para criar uma parede destacável ao longo dessa linha. Passe o mouse sobre um lado vertical para ver a prévia de uma escora lateral: o topo segue o cursor, e perto do alto do lado ela vai até a altura total. Clique para colocá-la. Esc ou botão direito cancela.",
 };
