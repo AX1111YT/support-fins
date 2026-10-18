@@ -64,22 +64,23 @@ export function moveTip(x, y) {
 }
 
 /** Fade the preview out, after GRACE_MS when `soft` (the pointer may come straight
- *  back). `then` runs when the fade starts, e.g. to hide the cursor dot. */
+ *  back). `then` runs when the fade starts, e.g. to hide the cursor dot; a later soft
+ *  call inside the grace replaces it (the latest place the pointer went decides). */
 export function hideBrace(soft, then) {
   if (soft) {
-    if (grace) return;
     graceDone = then;
+    if (grace) return;
     grace = setTimeout(() => { grace = 0; const f = graceDone; graceDone = null; fadeAll(); f?.(); }, GRACE_MS);
     return;
   }
-  cancelGrace();
+  finishGrace();
   fadeAll();
   then?.();
 }
 
 /** Gone this frame: the geometry is stale (a rebuild) or a click just placed it. */
 export function dropBrace() {
-  cancelGrace();
+  finishGrace();
   for (const g of ghosts) remove(g);
   ghosts = [];
   height = null;
@@ -95,6 +96,13 @@ function cancelGrace() {
   if (grace) clearTimeout(grace);
   grace = 0;
   graceDone = null;
+}
+
+/** End a grace early, still doing what it was going to (e.g. hide the dot). */
+function finishGrace() {
+  const f = graceDone;
+  cancelGrace();
+  f?.();
 }
 
 function fadeAll() {
@@ -135,7 +143,7 @@ function kick() {
 
 /** One animation frame: step the fades, the label and the cursor colour; stop when all settle. */
 function frame(now) {
-  const step = Math.min(1, (now - lastT) / FADE_MS) * OPACITY;
+  const step = Math.min(1, Math.max(0, now - lastT) / FADE_MS) * OPACITY;
   lastT = now;
   let busy = false;
   for (const g of ghosts) {

@@ -446,6 +446,8 @@ renderer.domElement.addEventListener('pointerleave', () => {
  *  brace stays a moment (an edge or a small facet on the way) before it fades. */
 function slipOff(hit, keepCursor) {
   braceQueued = null;
+  // back on the part inside a grace begun off it: Draw's cursor stays after all
+  if (!braceShown && keepCursor && braceGrace()) hideBrace(true, null);
   if (!braceShown) return false;
   braceShown = null;
   drawCursor.position.copy(hit.point);
@@ -596,6 +598,7 @@ export function drawClick(e) {
     return;
   }
   if (!drawStart) {
+    dropGhost();   // a brace still fading in its grace is not what this click starts
     drawStart = part.worldToLocal(hit.point.clone());
     drawMsg = '';
     updatePreview(hit.point);
