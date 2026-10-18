@@ -34,13 +34,13 @@ import './ui/scale.js';
 import { updateReadout } from './ui/readout.js';
 import {
   drawnWalls, drawnTris, drawStart, selectedWall, drawActive, sizeMarkers, clearPreview,
-  selectWall, removeSelected, drawHover, drawClick, braceActive, braceHover, braceClick, dropBracePreview, braceAway,
+  selectWall, removeSelected, drawHover, drawClick, braceActive, braceHover, braceClick, dropBracePreview,
 } from './ui/walls.js';
 import { finTris, padTris, lastBuilt } from './ui/finbuild.js';
 import { initSettings } from './ui/settings.js';
 import './ui/search.js';
 import { part, topology, rotM3, lastResult, threshold } from './ui/part.js';
-import { gizmo, hoverFace, layActive, cancelLay, layHover, layClick } from './ui/pose.js';
+import { gizmo, hoverFace, layActive, cancelLay, layHover, layClick, ringPressTurned, clearRingPress } from './ui/pose.js';
 import { planeBusy, renderGhost } from './ui/section.js';
 
 // ------------------------------------------------------------------ keyboard
@@ -97,10 +97,10 @@ renderer.domElement.addEventListener('pointermove', (ev) => {
   }
   // Auto / Full with Sway braces on: an upright side previews the brace a click stands.
   // An orbit or ring drag owns the pointer: the preview goes, not left behind. Over
-  // the rings without a drag it lingers a moment, as when it slips off the side.
+  // the rings without a drag it still shows: a drag there turns the part, a click
+  // stands the brace.
   if (!layActive() && braceActive()) {
     if (gizmo.dragging || pressAt) dropBracePreview();
-    else if (gizmo.axis) braceAway();
     else if (braceHover(ev)) { hoverFace.visible = false; return; }
   }
   // Face-lay hover ONLY while armed: otherwise a highlighted, clickable-looking
@@ -120,6 +120,7 @@ renderer.domElement.addEventListener('pointerleave', () => {
 
 renderer.domElement.addEventListener('pointerdown', (e) => {
   pressAt = { x: e.clientX, y: e.clientY };
+  clearRingPress();   // the rings' own press handler ran first; a turn is only known on release
   // Read at the press: the plane's TransformControls listens first, so it has set
   // its axis by now -- and on release it clears it before this module's pointerup.
   pressOnPlane = planeBusy();
@@ -158,13 +159,16 @@ renderer.domElement.addEventListener('pointerup', (e) => {
     return;
   }
 
+  // Auto / Full with Sway braces on: a click on an upright side (or a brace placed
+  // by hand) is the brace's, even over the rotate rings -- unless the press turned
+  // the part (a ring snaps 5 deg within the 4 px a click allows): that was a turn.
+  if (!layActive() && braceActive() && !ringPressTurned() && braceClick(e)) return;
+
   if (gizmo.dragging || gizmo.axis) return;
 
   // Lay a face flat -- ONLY when armed via the button. Off by default so a stray
   // viewport click orbits instead of silently discarding a careful rotation.
-  if (layActive()) { layClick(e); return; }
-  // Auto / Full with Sway braces on: a click on an upright side stands a brace.
-  if (braceActive()) braceClick(e);
+  if (layActive()) layClick(e);
 });
 
 // Cancel an armed mode / wall-in-progress: Escape, or a right-click in the viewport.

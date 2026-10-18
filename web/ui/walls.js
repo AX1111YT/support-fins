@@ -541,7 +541,7 @@ export function braceHover(ev) {
     drawCursor.position.copy(hit.point);   // still fading in its grace: keep following
     return false;
   }
-  if (!hit) braceAway();
+  braceAway();   // off the part, or on it with no brace shown: the dot goes too
   return false;
 }
 
@@ -550,7 +550,9 @@ export function braceHover(ev) {
 export function braceAway() {
   braceQueued = null;
   if (!braceShown && !braceGrace()) {
-    if (drawCursor.visible) { drawCursor.visible = false; renderer.domElement.style.cursor = ''; }
+    // the crosshair too, even with the dot already gone (a build landing hides it)
+    drawCursor.visible = false;
+    renderer.domElement.style.cursor = '';
     return;
   }
   braceShown = null;
@@ -563,18 +565,21 @@ export function dropBracePreview() {
   braceQueued = null;
   braceShown = null;
   hideBrace(false);
-  if (drawCursor.visible) { drawCursor.visible = false; renderer.domElement.style.cursor = ''; }
+  drawCursor.visible = false;
+  renderer.domElement.style.cursor = '';
 }
 
 /** braceActive's click: select a support placed by hand, or stand a brace on an
- *  upright side. Anywhere else does nothing (the click was an orbit). */
+ *  upright side; true when it did. Anywhere else is left to the caller (an orbit,
+ *  the rings). */
 export function braceClick(e) {
   const sup = pickSupport(e);
-  if (sup) { selectWall(sup); return; }
+  if (sup) { selectWall(sup); return true; }
   const hit = pickFace(e);
-  if (!hit || !swayHit(hit)) return;
+  if (!hit || !swayHit(hit)) return false;
   if (selectedWall) { selectedWall = null; syncSelection(); }
   placeSway(hit);
+  return true;
 }
 
 /** With Sway braces on, a click on an UPRIGHT side (no wall half-drawn) stands a brace. */

@@ -27,6 +27,11 @@ gizmo.setSize(0.85);
 scene.add(gizmo.getHelper ? gizmo.getHelper() : gizmo);
 const dragFrom = new THREE.Quaternion();   // pose at drag start: did the drag turn it?
 let dragSnap = null;                       // undo state at drag start (history.js)
+// Did the last ring press turn the part? A press under the 4 px click threshold
+// can still snap a ring 5 deg; app.js then won't take it as a click (Sway braces).
+let pressTurned = false;
+export const ringPressTurned = () => pressTurned;
+export function clearRingPress() { pressTurned = false; }
 gizmo.addEventListener('dragging-changed', (e) => {
   controls.enabled = !e.value;
   if (e.value && part) { dragFrom.copy(part.quaternion); dragSnap = beginGesture(); }
@@ -36,6 +41,7 @@ gizmo.addEventListener('dragging-changed', (e) => {
     el('rot-delta').textContent = '';
     // a turn by the rings is one undo step, like the 90deg buttons (it never was one)
     const turned = !!part && !part.quaternion.equals(dragFrom);
+    pressTurned = turned;
     if (turned) clearSuggestionMark();
     commitGesture(dragSnap, turned);
     dragSnap = null;
