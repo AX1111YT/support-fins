@@ -510,13 +510,17 @@ function planDist(a, b) {
   return dist;
 }
 
-function bodyPlan(rib) {
-  const [a, b] = rib.foot, len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+/** The rectangular footprint of a rib section, without rounded end caps. */
+function stripPlan(a, b, half) {
+  const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
   const dx = -(b[1] - a[1]) / len, dy = (b[0] - a[0]) / len;
-  const strip = (p, half) => [[p[0] + dx * half, p[1] + dy * half],
-                              [p[0] - dx * half, p[1] - dy * half]];
-  return planHull([...strip(a, rib.halfW), ...strip(b, rib.halfW),
-    ...rib.levels.flatMap((L) => [...strip(L.a, rib.th / 2), ...strip(L.b, rib.th / 2)])]);
+  return planHull([a, b].flatMap((p) => [[p[0] + dx * half, p[1] + dy * half],
+                                       [p[0] - dx * half, p[1] - dy * half]]));
+}
+
+function bodyPlan(rib) {
+  return planHull([...stripPlan(...rib.foot, rib.halfW),
+    ...rib.levels.flatMap((L) => stripPlan(L.a, L.b, rib.th / 2))]);
 }
 
 /**
@@ -529,14 +533,15 @@ function bodyPlan(rib) {
 export function swayClashes(rib, ribs) {
   for (const r of ribs) {
     if (!r?.foot) continue;
-    if (segDist(rib.foot[0], rib.foot[1], r.foot[0], r.foot[1]) < rib.halfW + r.halfW + SWAY.clearance) return true;
-    const need = (rib.th + r.th) / 2 + SWAY.clearance;
+    // Segment distance plus half-width treats each end as a semicircle. The
+    // actual feet end square: opposite braces can be clear across a thin part.
+    if (planDist(stripPlan(...rib.foot, rib.halfW), stripPlan(...r.foot, r.halfW)) < SWAY.clearance) return true;
     const top = Math.min(rib.height, r.height);
     const zs = new Set([...rib.levels, ...r.levels].filter((L) => L.z <= top).map((L) => L.z));
     zs.add(top);
     for (const z of zs) {
       const L = levelAt(rib.levels, z), M = levelAt(r.levels, z);
-      if (segDist(L.a, L.b, M.a, M.b) < need) return true;
+      if (planDist(stripPlan(L.a, L.b, rib.th / 2), stripPlan(M.a, M.b, r.th / 2)) < SWAY.clearance) return true;
     }
     for (const arm of rib.arms ?? []) {
       if (planDist(arm.plan, bodyPlan(r)) < SWAY.clearance) return true;

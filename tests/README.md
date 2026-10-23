@@ -10,6 +10,12 @@ deno test --allow-read tests/
 
 ## What's pinned (and why it exists)
 
+**`sway_clearance.test.js`** -- square-ended Sway feet and bodies keep the 1 mm
+clearance without imaginary round caps rejecting opposite sides of a thin wall.
+Pins rotated 2/6 mm walls, cross ribs, duplicate refusal, actual overlap and gaps
+below the clearance; the existing Sway tests still refuse facing braces across an
+open channel.
+
 Each of these is a regression that actually shipped once. The tests are the
 fence around it.
 
