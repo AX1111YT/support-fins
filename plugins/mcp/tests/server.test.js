@@ -10,9 +10,11 @@
 import { handle, callTool, TOOLS, PROTOCOL_VERSIONS } from '../server.js';
 import { run, OPTION_FLAGS } from '../../cli/cli.js';
 import { MODELS, assert } from '../../../tests/_util.js';
+import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 
 const LBRACKET = Deno.readFileSync(`${MODELS}lbracket.stl`);
-const ENTRY = new URL('../support-fins-mcp.js', import.meta.url).pathname;
+const ENTRY = fileURLToPath(new URL('../support-fins-mcp.js', import.meta.url));
 
 function memIO(files = { 'lb.stl': LBRACKET }) {
   const fs = new Map(Object.entries(files));
@@ -135,7 +137,7 @@ for (const [runtime, cmd, args] of [['deno', Deno.execPath(), ['run', '-RWE', EN
       assert(byId.get(2).result.isError === false, JSON.stringify(byId.get(2)));
       const cli = await viaCLI(['lb.stl', '--rot', '0,35,0']);
       assert(same(await Deno.readFile(`${dir}/lb-fins.3mf`), cli.fs.get('lb-fins.3mf')), 'file on disk = the CLI\'s');
-      assert(byId.get(3).result.structuredContent.output === `${await Deno.realPath(dir)}/rel.stl`, JSON.stringify(byId.get(3)));
+      assert(byId.get(3).result.structuredContent.output === join(await Deno.realPath(dir), 'rel.stl'), JSON.stringify(byId.get(3)));
       assert((await Deno.stat(`${dir}/rel.stl`)).size > 0, 'relative output lands in the server\'s directory');
       await Deno.remove(dir, { recursive: true });
     },
