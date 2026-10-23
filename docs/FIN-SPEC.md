@@ -462,3 +462,23 @@ issue 044), so its shoulder never leans flatter either; a step under half a line
 prints at any angle and is left alone. 2 lines is the tuned wall, unchanged. A thicker wall fits fewer places: on a tight part some
 overhangs lose their wall, and the readout reports them. It is a setting of the part
 (undoable, saved with a session), not the printer. The plugins build 2 lines.
+
+## Optional rounded bed feet
+
+`tunables.roundFeet: true` rounds ordinary, squat and wedge feet; Auto Sway
+inherits it, and direct Sway callers may pass `roundFeet: true`. Browser default
+is off. Omitted/false/null tunables restore legacy feet on reused engine instances,
+without resetting material clearances. Undo/redo and saved 3MF sessions retain the
+browser setting. Feet standing on the part itself are unchanged. Vertical/resin pin
+mode ignores the setting, preserving its windowed/undercut feet and overlap fixes.
+
+Eight-step corner arcs are inscribed in the existing clearance envelope. Normal
+and squat flanges round only their outside ends. Internal segment caps are inset
+up to 0.005 mm and connecting solids overlap up to 0.01 mm below the lower roof;
+the joints do not expand the checked contour. Wedge and Sway feet use the same
+inscribed polygon rounding. Contact crests and tines retain their geometry and
+interface tags; the added foot triangles remain owned by their support record.
+
+Rounding reduces first-layer corner area. Geometry checks are not print validation
+of adhesion or metre-high stability. Compare the first layers in the slicer and
+print-test before adopting it for tall parts. Legacy geometry goldens stay unchanged.

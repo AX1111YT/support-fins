@@ -192,10 +192,10 @@ Deno.test('draw: the squat stem and the full wall overlap, never meet flush', ()
   // mesh's topology lost the wall's section there) -- with the interface crest too,
   // whose slope crest takes the stem's tip width
   const key = (v) => v.map((c) => Math.round(c * 1e4)).join(',');
-  const prior = P.iface;
+  const prior = P.iface, priorRound = P.roundFeet;
   try {
-    for (const iface of [false, 'all']) {
-      P.iface = iface;
+    for (const iface of [false, 'all']) for (const roundFeet of [false, true]) {
+      P.iface = iface; P.roundFeet = roundFeet;
       const w = drawnWall([-9, 0, zAt(-9)], [8, 0, zAt(8)], pos, 0);
       assert(w.ok && w.squat, `expected a mixed wall (crest ${iface}): ${w.reason}`);
       const faces = new Map(), edges = new Map();
@@ -211,7 +211,7 @@ Deno.test('draw: the squat stem and the full wall overlap, never meet flush', ()
       assert([...faces.values()].every((n) => n === 1), `a face of the squat stem lies on the full wall's (crest ${iface})`);
       assert([...edges.values()].every((n) => n === 2), `an edge is shared by the squat stem and the full wall (crest ${iface})`);
     }
-  } finally { P.iface = prior; }
+  } finally { P.iface = prior; P.roundFeet = priorRound; }
 });
 
 Deno.test('draw: a squat brim stays out of an underside that dips beside the line (torus)', () => {

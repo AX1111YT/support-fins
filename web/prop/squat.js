@@ -6,7 +6,7 @@
  * Split out of prop.js, which re-exports the public names.
  */
 import { solidClearance } from '../inside.js';
-import { ribbon } from '../solids.js';
+import { ribbon, roundedFlange } from '../solids.js';
 import { longestRun, stationCertified, stationIsClear, welds } from './clearance.js';
 import { PROP } from './config.js';
 import { settleTop } from './contact.js';
@@ -69,7 +69,8 @@ export function sweepSquat(line, zBed, out, inset = null) {
   // resin pins (#309): a windowed brim, so it flexes off a resin plate (not on an
   // inset run, whose brim is narrowed to stay off its neighbour's; Draw passes an
   // all-zero inset on an all-squat line)
-  if (PROP.tineDir !== 'vertical' || inset?.some((v) => v > 0) || !windowedFlange(feet, out)) ribbon(brim, out);
+  if (PROP.roundFeet && PROP.tineDir !== 'vertical') roundedFlange(brim, out);
+  else if (PROP.tineDir !== 'vertical' || inset?.some((v) => v > 0) || !windowedFlange(feet, out)) ribbon(brim, out);
   if (kinds) { dropCollapsed(out, from); emitCrest(crest, out); }
   return true;
 }

@@ -7,7 +7,7 @@
  * Split out of prop.js, which re-exports the public names.
  */
 import { cutWall } from '../cutout.js';
-import { ribbon } from '../solids.js';
+import { ribbon, roundedFlange } from '../solids.js';
 import { PROP } from './config.js';
 import { crestCut, crestKinds, dropCollapsed, emitCrest } from './crest.js';
 import { windowedFlange } from './resinfoot.js';
@@ -122,7 +122,8 @@ export function sweep(line, zBed, out, minH = PROP.minHeight) {
   const from = out.length;
   if (!cutWall(st, wall, out, PROP)) ribbon(wall, out);
   // resin pins (#309): a windowed flange, so the base flexes off a resin plate
-  if (PROP.tineDir !== 'vertical' || !windowedFlange(feet, out)) ribbon(flange, out);
+  if (PROP.roundFeet && PROP.tineDir !== 'vertical') roundedFlange(flange, out);
+  else if (PROP.tineDir !== 'vertical' || !windowedFlange(feet, out)) ribbon(flange, out);
   if (kinds) { dropCollapsed(out, from); emitCrest(crest, out); }
   return true;
 }

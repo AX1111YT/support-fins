@@ -41,6 +41,8 @@ export default {
   "Show the other side of the cut instead.": "Stattdessen die andere Seite des Schnitts zeigen.",
   "Full brace depth": "Volle Streben-Tiefe",
   "Use the selected Brace depth percentage beyond the usual 60 mm limit. Larger braces need more plate space and material; collisions can shorten or refuse them. Off keeps the 60 mm limit.": "Den gewählten Prozentsatz für die Streben-Tiefe auch über die übliche Grenze von 60 mm hinaus verwenden. Größere Streben benötigen mehr Platz auf dem Druckbett und mehr Material; bei Kollisionen werden sie verkürzt oder abgelehnt. Aus behält die Grenze von 60 mm.",
+  "Rounded feet": "Abgerundete Stützfüße",
+  "Round FDM support foot corners inside the existing clearance envelope. Off keeps the original feet. Rounding reduces plate contact area; check the first layers in your slicer and print-test before using it for tall parts.": "Ecken der FDM-Stützfüße innerhalb des bisherigen Freiraums abrunden. Aus behält die ursprünglichen Füße. Abrunden verkleinert die Kontaktfläche zum Druckbett; die ersten Schichten im Slicer prüfen und vor hohen Teilen einen Probedruck machen.",
   "Middle-drag orbits, Shift + middle-drag pans, wheel zooms.": "Mittlere Maustaste ziehen dreht die Ansicht, Umschalt + mittlere Maustaste ziehen verschiebt, Mausrad zoomt.",
   "Middle-drag orbits, Ctrl + middle-drag pans, wheel zooms.": "Mittlere Maustaste ziehen dreht die Ansicht, Strg + mittlere Maustaste ziehen verschiebt, Mausrad zoomt.",
   "Right-drag orbits, middle- or Ctrl + right-drag pans, wheel zooms.": "Rechte Maustaste ziehen dreht die Ansicht, mittlere Maustaste oder Strg + rechte Maustaste ziehen verschiebt, Mausrad zoomt.",

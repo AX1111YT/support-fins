@@ -56,6 +56,19 @@ Set **Nozzle** (0.2–2.0 mm) to your printer's nozzle and the support widths fo
 The contact tip and tines stay one line wide either way. See
 [the nozzle guide](docs/NOZZLE.md) for the sizes and what to check in the slicer.
 
+### Rounded support feet
+
+**Rounded feet** optionally rounds the corners of FDM bed-standing wall,
+squat, wedge and Sway feet inside their existing clearance envelope. It starts
+off, so existing geometry stays unchanged. Vertical/resin pin mode keeps its own
+windowed/undercut feet, even if the setting is saved as on. The choice is undoable and saved in
+3MF sessions. Engine callers opt in with `tunables: { roundFeet: true }`;
+direct Sway callers use `roundFeet: true`. Omitted/false restores ordinary feet.
+Segment joints overlap inside the foot contour rather than meeting face to face.
+Rounding removes corner area; plate adhesion and tall-print stability have not
+been physically compared. Check the sliced first layers and print-test before
+using it for tall parts.
+
 ### Sway braces for tall parts
 
 **Full brace depth** is an optional checkbox under Sway. It starts off, keeping

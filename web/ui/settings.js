@@ -155,6 +155,10 @@ function debouncedRefresh(ms = 180) {
   clearTimeout(refreshTimer);
   refreshTimer = setTimeout(() => { refreshTimer = null; refreshFins(); }, ms);
 }
+el('rounded-feet').addEventListener('input', () => {
+  FIN.roundFeet = PROP.roundFeet = el('rounded-feet').checked;
+  debouncedRefresh();
+});
 // Tine grip only means anything when the tines are on, so hide its slider with the
 // toggle (keeps the panel honest -- no dead control).
 // Tine grip + layer height only matter when Tines is on -- hide both otherwise.
@@ -167,6 +171,7 @@ const PIN_SPACING_TIP = 'How many pins each wall gets. More pins = a firmer hold
 let gripTip = null;
 function syncTineGrip() {
   const on = el('tines').checked;
+  el('rounded-feet-fld').hidden = el('tine-dir').value === 'vertical';
   el('tinegrip-fld').hidden = !on;
   el('tinedir-fld').hidden = !on;
   const pins = on && el('tine-dir').value === 'vertical';
@@ -189,7 +194,7 @@ window.addEventListener('languagechange', syncTineGrip);   // the swapped toolti
 // Tine direction (GitHub #309): vertical lays resin pins (prop/pins.js). This page's
 // copy is set here for Draw; the Worker gets it in the build's tunables.
 export function tineDirTunables() {
-  return { tineDir: el('tine-dir').value, pinDepth: el('pin-depth').valueAsNumber };
+  return { roundFeet: el('rounded-feet').checked, tineDir: el('tine-dir').value, pinDepth: el('pin-depth').valueAsNumber };
 }
 // Resin cures joined walls into one block (#309), so picking a direction sets
 // Separate walls to match; the box is the user's to change after.
