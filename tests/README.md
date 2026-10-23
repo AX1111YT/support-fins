@@ -16,6 +16,11 @@ Pins rotated 2/6 mm walls, cross ribs, duplicate refusal, actual overlap and gap
 below the clearance; the existing Sway tests still refuse facing braces across an
 open channel.
 
+**`sway_cross_gauge.test.js`** -- Cross uses the actual Sway gauge at 0.2–2 mm
+nozzles and 2/4/8 wall lines, keeps the flange margin, and checks the wider body
+against the part and neighbouring supports. Pins real worker output, removal
+ownership, contact-material tags and STL/3MF geometry on a synthetic metre post.
+
 Each of these is a regression that actually shipped once. The tests are the
 fence around it.
 

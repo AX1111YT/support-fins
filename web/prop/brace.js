@@ -60,9 +60,9 @@ function ribHitsPart(tris, o, d, u0, u1, w, z0, z1) {
 /** One rib from station point `o` (on the plate, at the stem's centre) in unit plan
  *  direction `d`: `stem` is the rib's height there, `reach` how far out it lands.
  *  Its triangles, or null when the part is in the way. */
-function rib(tris, o, d, zBed, stem, reach) {
-  const u0 = -PROP.th / 2;                          // starts inside the stem: overlapping solids
-  const fw = PROP.footMin;                          // flange half-width
+function rib(tris, o, d, zBed, stem, reach, th = PROP.th) {
+  const u0 = -th / 2;                               // starts inside the stem: overlapping solids
+  const fw = PROP.footMin + (th - PROP.th) / 2;      // keep the flange's margin past the body
   const z1 = (u) => zBed + stem * Math.max(0, 1 - Math.max(0, u) / reach);
   // out to sideClear past the tip: a part resting on the plate just beyond where a rib
   // lands would otherwise meet its flange end-on (review: 0.05 mm). From the stem's
@@ -70,11 +70,11 @@ function rib(tris, o, d, zBed, stem, reach) {
   // the wall's clearance, not the rib's -- checking it refused every rib on Isaac's
   // right-hand wall (it stands 0.6 mm off the boot at the plate)
   const lo = 0, hi = reach + PROP.sideClear;
-  if (ribHitsPart(tris, o, d, lo, hi, PROP.th / 2 + PROP.sideClear, zBed, z1)) return null;
+  if (ribHitsPart(tris, o, d, lo, hi, th / 2 + PROP.sideClear, zBed, z1)) return null;
   if (ribHitsPart(tris, o, d, lo, hi, fw + PROP.sideClear, zBed, () => zBed + PROP.baseH)) return null;
   const out = [];
   // the rib: (u, z) triangle, extruded across. Frame (u, z, v) right-handed: v = u x z.
-  boxExtrude([[u0, zBed], [reach, zBed], [u0, zBed + stem]], -PROP.th / 2, PROP.th / 2,
+  boxExtrude([[u0, zBed], [reach, zBed], [u0, zBed + stem]], -th / 2, th / 2,
     (a, b, c) => [o[0] + d[0] * a + d[1] * c, o[1] + d[1] * a - d[0] * c, b], out);
   // its flange: (u, v') rectangle, extruded up. Frame (u, v', z): v' = z x u.
   boxExtrude([[u0, -fw], [reach, -fw], [reach, fw], [u0, fw]], zBed, zBed + PROP.baseH,
@@ -111,22 +111,23 @@ function sheared(tris, zBed, lean) {
  * the horizontal reach is capped at the brace's base depth (`maxReach`). `lean`
  * is the outer edge's XY shift per mm of height; part checks run in the
  * inverse-sheared frame.
+ * `th` is this brace's actual body gauge; ordinary wall ribs keep PROP.th.
  * Returns { reach, th } for the rib it built, or null when nothing fitted.
  */
-export function braceCrossRib(out, tris, o, d, zBed, height, maxReach, lean, clear = () => true, rise = BRACE.rise) {
+export function braceCrossRib(out, tris, o, d, zBed, height, maxReach, lean, clear = () => true, rise = BRACE.rise, th = PROP.th) {
   const ratio = Number.isFinite(rise) ? Math.max(0.1, Math.min(0.9, rise)) : BRACE.rise;
   const stem = Math.min(ratio * height, height - 1);
   if (stem < PROP.baseH + 1) return null;
   const reach0 = Math.max(BRACE.minReach, Math.min(PROP.footRatio * height, maxReach));
   const local = sheared(tris, zBed, lean);
   for (let reach = reach0; reach >= BRACE.minReach; reach /= 2) {
-    const r = rib(local, o, d, zBed, stem, reach);
+    const r = rib(local, o, d, zBed, stem, reach, th);
     if (!r) continue;
     const world = r.map((v) => {
       const z = v[2] - zBed;
       return [v[0] + lean[0] * z, v[1] + lean[1] * z, v[2]];
     });
-    if (clear(world)) { out.push(...world); return { reach, th: PROP.th }; }
+    if (clear(world)) { out.push(...world); return { reach, th }; }
   }
   return null;
 }

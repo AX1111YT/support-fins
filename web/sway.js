@@ -446,14 +446,14 @@ export function buildSwayRib(p, uc, partTris, topo, rot, offset, opts = {}) {
   let cross = 0;
   const arms = [];
   if (Number.isFinite(opts.crossAbove) && H > opts.crossAbove) {
-    const inset = PROP.th / 2 + 0.1;
+    const inset = th / 2 + 0.1;
     const o = fr.toWorld(sOut(0) - inset, uc, 0);
     const slope = sInSlope + (SWAY.topDepth - D0) / H;
     const lean = [fr.nh.x * slope, fr.nh.y * slope];
     const clearArm = (t) => (opts.crossClear ? opts.crossClear(t) : true);
     for (const sgn of [1, -1]) {
       const d = [p.u.x * sgn, p.u.y * sgn], start = out.length;
-      const c = braceCrossRib(out, partTris, o, d, 0, H, D0, lean, clearArm, opts.crossRise);
+      const c = braceCrossRib(out, partTris, o, d, 0, H, D0, lean, clearArm, opts.crossRise, th);
       if (!c) continue;
       cross++;
       arms.push({ a: o, b: [o[0] + d[0] * c.reach, o[1] + d[1] * c.reach, 0], th: c.th,

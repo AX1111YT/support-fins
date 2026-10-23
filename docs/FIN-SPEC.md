@@ -278,6 +278,15 @@ over 7 layers. The printed numbers above still stand.
 
 ## Wall ribs (Full coverage) — `web/prop/brace.js`
 
+Sway's optional cross ribs use the **actual Sway body thickness**, including its
+height/nozzle floor, rather than the ordinary wall thickness. Their flange keeps
+the ordinary foot's margin beyond that wider body. Part and support clearance
+checks see the complete wider mesh; a blocked arm may shorten or be omitted, never
+thin down to fit. The selected cross-height percentage and ordinary wall ribs are
+unchanged. This uses more material when Sway is thicker than an ordinary wall;
+the geometry checks establish clearance and export integrity, not measured print
+strength. A physical coupon is still needed.
+
 Not printed yet. The fill pass serves hands, hems and elbows with walls ~3 mm long and
 25–50 mm tall (Isaac's hands: 33 mm on a 0.4 × 1 mm footprint), a suspect in plates
 letting go. A cap on the ratio (closed PR #200) left the hands bare, so the wall stays
